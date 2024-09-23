@@ -11,8 +11,10 @@ import { ThemeProvider, createTheme } from '@mui/material';
 
 function App() {
 
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useLocalStorageState('selectedMode', prefersDarkMode ? 'dark' : 'light');
+  type modeType = "light" | "dark" | null;
+
+  const prefersDarkMode = useMediaQuery<boolean>('(prefers-color-scheme: dark)');
+  const [mode, setMode] = useLocalStorageState<modeType>('selectedMode', prefersDarkMode ? 'dark' : 'light');
 
   const appTheme = createTheme({
     palette: {
@@ -29,7 +31,7 @@ function App() {
       <ThemeProvider theme={appTheme}>
         <Box className="flex flex-col justify-center items-center height-full-mobile-support">
 
-          <Header />
+          <Header mode={mode}/>
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
               
