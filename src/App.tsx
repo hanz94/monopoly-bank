@@ -6,8 +6,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import HeaderAppBar from './components/HeaderAppBar';
-import DrawerLeft from './components/DrawerLeft';
+import Header from './components/Header/Header';
 import { ThemeProvider, createTheme } from '@mui/material';
 
 function App() {
@@ -30,7 +29,7 @@ function App() {
       <ThemeProvider theme={appTheme}>
         <Box className="flex flex-col justify-center items-center height-full-mobile-support">
 
-          <HeaderAppBar />
+          <Header />
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
               
