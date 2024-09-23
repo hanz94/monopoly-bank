@@ -4,9 +4,10 @@ import DrawerLeft from "./DrawerLeft";
 
 type headerTypes = {
     mode: "light" | "dark"
+    setMode: (mode: "light" | "dark") => void
 }
 
-function Header({mode}: headerTypes) {
+function Header({mode, setMode}: headerTypes) {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -17,7 +18,7 @@ function Header({mode}: headerTypes) {
     return (
         <>
             <HeaderAppBar onToggleDrawer={toggleDrawer}  />
-            <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} mode={mode}/>
+            <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} mode={mode} setMode={setMode} />
         </>
      );
 }

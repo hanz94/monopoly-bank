@@ -18,9 +18,10 @@ type DrawerLeftProps = {
   isDrawerOpen: boolean;
   onToggleDrawer: (isDrawerOpen: boolean) => () => void;
   mode: "light" | "dark";
+  setMode: (mode: "light" | "dark") => void;
 }
 
-export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode}: DrawerLeftProps ) {
+export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode}: DrawerLeftProps ) {
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={onToggleDrawer(false)}>
@@ -41,17 +42,27 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode}: Drawer
       </List>
       <Divider />
       <List>
-        {['Powiadomienia', 'Tryb wyświetlania'].map((text, index) => (
+        {['Powiadomienia'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
               {index === 0 ? <NotificationsIcon /> : null}
-              {index === 1 ? (mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />) : null}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
         ))}
+
+          <ListItem key={"Tryb wyświetlania"} disablePadding>
+            <ListItemButton onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}>
+              <ListItemIcon>
+              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />} 
+              </ListItemIcon>
+              <ListItemText primary={mode === "dark" ? "Tryb jasny" : "Tryb ciemny"} />
+            </ListItemButton>
+          </ListItem>
+
+
       </List>
     </Box>
   );

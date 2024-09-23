@@ -31,7 +31,7 @@ function App() {
       <ThemeProvider theme={appTheme}>
         <Box className="flex flex-col justify-center items-center height-full-mobile-support">
 
-          <Header mode={mode}/>
+          <Header mode={mode} setMode={setMode}/>
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
               
