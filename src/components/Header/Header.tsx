@@ -17,7 +17,7 @@ function Header({mode, setMode}: headerTypes) {
 
     return (
         <>
-            <HeaderAppBar onToggleDrawer={toggleDrawer}  />
+            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
             <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} mode={mode} setMode={setMode} />
         </>
      );

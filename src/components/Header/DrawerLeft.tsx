@@ -24,12 +24,12 @@ type DrawerLeftProps = {
 export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode}: DrawerLeftProps ) {
 
   const DrawerList = (
-    <Box sx={{ width: 250 }} role="presentation" onClick={onToggleDrawer(false)}>
+    <Box sx={{ width: 250 }} onClick={onToggleDrawer(false)}>
       <List>
         {['Przelew do banku', 'Wypłata z banku', 'Przelew do gracza', 'Poproś o przelew'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
-              <ListItemIcon>
+              <ListItemIcon sx={{ml: 1}}>
                 {index === 0 ? <MoneyOffIcon /> : null}
                 {index === 1 ? <AttachMoneyIcon /> : null}
                 {index === 2 ? <PaymentsIcon /> : null}
@@ -45,7 +45,7 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
         {['Powiadomienia'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
-              <ListItemIcon>
+              <ListItemIcon sx={{ml: 1}}>
               {index === 0 ? <NotificationsIcon /> : null}
               </ListItemIcon>
               <ListItemText primary={text} />
@@ -55,7 +55,7 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
 
           <ListItem key={"Tryb wyświetlania"} disablePadding>
             <ListItemButton onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}>
-              <ListItemIcon>
+              <ListItemIcon sx={{ml: 1}}>
               {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />} 
               </ListItemIcon>
               <ListItemText primary={mode === "dark" ? "Tryb jasny" : "Tryb ciemny"} />
@@ -69,7 +69,15 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
 
   return (
     <>
-      <Drawer open={isDrawerOpen} onClose={onToggleDrawer(false)}>
+      <Drawer sx={{
+    '& .MuiDrawer-root': {
+        position: 'absolute',
+    },
+    '& .MuiPaper-root': {
+        position: 'absolute',
+        top: 64
+    },
+  }} open={isDrawerOpen} onClose={onToggleDrawer(false)}>
         {DrawerList}
       </Drawer>
     </>
