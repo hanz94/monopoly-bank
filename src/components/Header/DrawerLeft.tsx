@@ -77,7 +77,7 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
         position: 'absolute',
         top: 64
     },
-  }} open={isDrawerOpen} onOpen={onToggleDrawer(true)} onClose={onToggleDrawer(false)}>
+  }} open={isDrawerOpen} onOpen={onToggleDrawer(true)} onClose={onToggleDrawer(false)} disableBackdropTransition={true} swipeAreaWidth={55}>
         {DrawerList}
       </SwipeableDrawer>
     </>
