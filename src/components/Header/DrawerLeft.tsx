@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -69,7 +69,7 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
 
   return (
     <>
-      <Drawer sx={{
+      <SwipeableDrawer sx={{
     '& .MuiDrawer-root': {
         position: 'absolute',
     },
@@ -77,9 +77,9 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
         position: 'absolute',
         top: 64
     },
-  }} open={isDrawerOpen} onClose={onToggleDrawer(false)}>
+  }} open={isDrawerOpen} onOpen={onToggleDrawer(true)} onClose={onToggleDrawer(false)}>
         {DrawerList}
-      </Drawer>
+      </SwipeableDrawer>
     </>
   );
 }

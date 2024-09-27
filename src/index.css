@@ -8,6 +8,10 @@
   box-sizing: border-box;
 }
 
+/* Disable swipe gestures for mobile */
+html, body {
+  overscroll-behavior-x: none;
+}
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

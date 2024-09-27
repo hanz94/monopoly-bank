@@ -13,8 +13,9 @@ type HeaderAppBarProps = {
 function HeaderAppBar( {onToggleDrawer, isDrawerOpen} : HeaderAppBarProps ) {
     return (
       <>
-          <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-            <Toolbar>
+          <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1
+           }}>
+            <Toolbar sx={{height: 64}}>
               <IconButton
                 size="large"
                 edge="start"
