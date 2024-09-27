@@ -1,4 +1,5 @@
 import './App.css'
+import { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocalStorageState } from '@toolpad/core';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -7,11 +8,14 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Header from './components/Header/Header';
-import { ThemeProvider, createTheme } from '@mui/material';
+import ModalWindow from './components/ModalWindow';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 function App() {
 
   type modeType = "light" | "dark" | null;
+
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const prefersDarkMode = useMediaQuery<boolean>('(prefers-color-scheme: dark)');
   const [mode, setMode] = useLocalStorageState<modeType>('selectedMode', prefersDarkMode ? 'dark' : 'light');
@@ -29,9 +33,13 @@ function App() {
   return (
     <>
       <ThemeProvider theme={appTheme}>
+      <CssBaseline />
+
+        <ModalWindow open={isModalOpen} onClose={() => setModalOpen(false)} title="Monopoly tool" />
+
         <Box className="flex flex-col justify-center items-center height-full-mobile-support">
 
-          <Header mode={mode} setMode={setMode}/>
+          <Header mode={mode} setMode={setMode} setModalOpen={setModalOpen} />
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
               
