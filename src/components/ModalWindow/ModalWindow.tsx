@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Modal,
   Box,
@@ -9,11 +8,12 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-interface ThemeAwareModalProps {
+interface ModalWindowProps {
   open: boolean;
   onClose: () => void;
-  title: string;
-  children: React.ReactNode;
+  modalContent: {
+    title: string;
+    content: JSX.Element;};
 }
 
 const ModalContent = styled(Box)(({ theme }) => ({
@@ -22,11 +22,11 @@ const ModalContent = styled(Box)(({ theme }) => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  maxWidth: '90%',
+  maxWidth: '85%',
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[24],
   borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(4),
+  padding: theme.spacing(2.7),
   outline: 'none',
 }));
 
@@ -37,12 +37,11 @@ const ModalHeader = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-export default function ThemeAwareModal({
+export default function ModalWindow({
   open,
   onClose,
-  title,
-  children,
-}: ThemeAwareModalProps) {
+  modalContent
+}: ModalWindowProps) {
   const theme = useTheme();
 
   return (
@@ -55,7 +54,7 @@ export default function ThemeAwareModal({
       <ModalContent>
         <ModalHeader>
           <Typography variant="h6" component="h2" id="theme-aware-modal-title">
-            {title}
+            {modalContent.title}
           </Typography>
           <IconButton
             aria-label="close"
@@ -68,7 +67,7 @@ export default function ThemeAwareModal({
           </IconButton>
         </ModalHeader>
         <Typography id="theme-aware-modal-description" sx={{ mt: 2 }}>
-          {children}
+          {modalContent.content}
         </Typography>
       </ModalContent>
     </Modal>

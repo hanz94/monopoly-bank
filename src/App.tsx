@@ -1,5 +1,4 @@
 import './App.css'
-import { useState } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocalStorageState } from '@toolpad/core';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -8,21 +7,22 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Header from './components/Header/Header';
-import ModalWindow from './components/ModalWindow';
+import ModalWindow from './components/ModalWindow/ModalWindow';
+import useModals from './components/ModalWindow/ModalUtils';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 function App() {
 
-  type modeType = "light" | "dark" | null;
+  const modals = useModals();
 
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  type modeType = "light" | "dark" | null;
 
   const prefersDarkMode = useMediaQuery<boolean>('(prefers-color-scheme: dark)');
   const [mode, setMode] = useLocalStorageState<modeType>('selectedMode', prefersDarkMode ? 'dark' : 'light');
 
   const appTheme = createTheme({
     palette: {
-      mode: mode,
+      mode: mode ?? 'dark',
     },
   });
 
@@ -35,11 +35,11 @@ function App() {
       <ThemeProvider theme={appTheme}>
       <CssBaseline />
 
-        <ModalWindow open={isModalOpen} onClose={() => setModalOpen(false)} title="Monopoly tool" />
+        <ModalWindow open={modals.isModalOpen} onClose={modals.close} modalContent={modals.modalContent} />
 
         <Box className="flex flex-col justify-center items-center height-full-mobile-support">
 
-          <Header mode={mode} setMode={setMode} setModalOpen={setModalOpen} />
+          <Header mode={mode ?? 'dark'} setMode={setMode} modals={modals} />
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
               

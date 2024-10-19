@@ -5,11 +5,10 @@ import DrawerLeft from "./DrawerLeft";
 type headerTypes = {
     mode: "light" | "dark"
     setMode: (mode: "light" | "dark") => void
-    isModalOpen: boolean
-    setModalOpen: (newModalOpen: boolean) => void
+    modals: any
 }
 
-function Header({mode, setMode, isModalOpen, setModalOpen}: headerTypes) {
+function Header({mode, setMode, modals}: headerTypes) {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -19,7 +18,7 @@ function Header({mode, setMode, isModalOpen, setModalOpen}: headerTypes) {
 
     return (
         <>
-            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} isModalOpen={isModalOpen} setModalOpen={setModalOpen} />
+            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} modals={modals} />
             <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} mode={mode} setMode={setMode} />
         </>
      );

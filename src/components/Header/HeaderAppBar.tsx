@@ -9,10 +9,12 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 type HeaderAppBarProps = {
   onToggleDrawer: (isDrawerOpen: boolean) => () => void
   isDrawerOpen: boolean
-  isModalOpen: boolean
-  setModalOpen: (newModalOpen: boolean) => void
+  modals: any
 }
-function HeaderAppBar( {onToggleDrawer, isDrawerOpen, isModalOpen, setModalOpen} : HeaderAppBarProps ) {
+function HeaderAppBar( {onToggleDrawer, isDrawerOpen, modals} : HeaderAppBarProps ) {
+
+  // const modals = useModals();
+
     return (
       <>
           <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1
@@ -26,12 +28,12 @@ function HeaderAppBar( {onToggleDrawer, isDrawerOpen, isModalOpen, setModalOpen}
                 sx={{ mr: 2 }}
                 onClick={onToggleDrawer(!isDrawerOpen)}
               >
-                {(isDrawerOpen) ? <ArrowBackIosNewIcon /> : <MenuIcon />}
+                {isDrawerOpen ? <ArrowBackIosNewIcon /> : <MenuIcon />}
               </IconButton>
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Monopoly Tool
               </Typography>
-              <Button color="inherit" onClick={() => setModalOpen(!isModalOpen)}>Wybierz pseudonim</Button>
+              <Button color="inherit" onClick={() => modals.open(modals.contents.changeNicknameContent)}>Wybierz pseudonim</Button>
             </Toolbar>
           </AppBar>
       </>
