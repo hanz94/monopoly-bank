@@ -11,8 +11,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useDrawerContext } from '../../contexts/DrawerContext';
 
@@ -55,7 +54,7 @@ const {isDrawerOpen, setIsDrawerOpen} = useDrawerContext();
           <ListItem key={"Tryb wyświetlania"} disablePadding>
             <ListItemButton onClick={() => toggleTheme()}>
               <ListItemIcon sx={{ml: 1}}>
-              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />} 
+              <DarkModeSwitch checked={mode === "dark"} size={24} sunColor='currentColor' moonColor='currentColor'/>
               </ListItemIcon>
               <ListItemText primary={mode === "dark" ? "Tryb jasny" : "Tryb ciemny"} />
             </ListItemButton>

@@ -23,13 +23,15 @@ function AppLayout() {
           
           <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
             <Box className="flex flex-col justify-center items-center">
-              <p className="text-4xl">
-                Monopoly tool
+              <p className="text-4xl m-4">
+                Nowa gra
               </p>
-              <Button variant="contained" sx={{ mt: 2 }} onClick={toggleTheme}>
-                {mode === 'dark' ? <LightModeIcon sx={{mr: 1}} /> : <DarkModeIcon sx={{mr: 1}} />}
-                Switch to {mode === 'dark' ? 'light' : 'dark'} mode
-              </Button>
+              <p className="text-4xl m-4">
+                Dołącz do gry
+              </p>
+              <p className="text-4xl m-4">
+                Instrukcja
+              </p>
             </Box>
           </Paper>
         </Box> 
