@@ -10,10 +10,6 @@ const useModals = () => {
 
     const modals = {
         contents: {
-            emptyContent: {
-                title: "",
-                content: <></>,
-            },
             changeNicknameContent: {
                 title: "Wybierz pseudonim",
                 content: (
