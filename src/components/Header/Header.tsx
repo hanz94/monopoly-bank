@@ -1,19 +1,12 @@
-import { useState } from "react";
 import HeaderAppBar from "./HeaderAppBar";  
 import DrawerLeft from "./DrawerLeft";
 
 function Header() {
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-    const toggleDrawer = (newOpen: boolean) => () => {
-        setIsDrawerOpen(newOpen);
-      };
-
     return (
         <>
-            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
-            <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
+            <HeaderAppBar  />
+            <DrawerLeft  />
         </>
      );
 }

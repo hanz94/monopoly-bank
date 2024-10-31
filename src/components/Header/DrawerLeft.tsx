@@ -14,18 +14,16 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { useDrawerContext } from '../../contexts/DrawerContext';
 
-type DrawerLeftProps = {
-  isDrawerOpen: boolean;
-  onToggleDrawer: (isDrawerOpen: boolean) => () => void;
-}
 
-export default function DrawerLeft( {isDrawerOpen, onToggleDrawer}: DrawerLeftProps ) {
+export default function DrawerLeft() {
 
 const {mode, toggleTheme} = useThemeContext();
+const {isDrawerOpen, setIsDrawerOpen} = useDrawerContext();
 
   const DrawerList = (
-    <Box sx={{ width: 250 }} onClick={onToggleDrawer(false)}>
+    <Box sx={{ width: 250 }} onClick={() => setIsDrawerOpen(false)}>
       <List>
         {['Przelew do banku', 'Wypłata z banku', 'Przelew do gracza', 'Poproś o przelew'].map((text, index) => (
           <ListItem key={text} disablePadding>
@@ -78,7 +76,7 @@ const {mode, toggleTheme} = useThemeContext();
         position: 'absolute',
         top: 64
     },
-  }} open={isDrawerOpen} onOpen={onToggleDrawer(true)} onClose={onToggleDrawer(false)} disableBackdropTransition={true} swipeAreaWidth={55}>
+  }} open={isDrawerOpen} onOpen={() => setIsDrawerOpen(true)} onClose={() => setIsDrawerOpen(false)} disableBackdropTransition={true} swipeAreaWidth={55}>
         {DrawerList}
       </SwipeableDrawer>
     </>

@@ -7,14 +7,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useModalContext } from '../../contexts/ModalContext';
 import modalContent from '../../utils/modalContent';
+import { useDrawerContext } from '../../contexts/DrawerContext';
 
-type HeaderAppBarProps = {
-  onToggleDrawer: (isDrawerOpen: boolean) => () => void
-  isDrawerOpen: boolean
-}
-function HeaderAppBar( {onToggleDrawer, isDrawerOpen} : HeaderAppBarProps ) {
+function HeaderAppBar() {
 
   const { modalOpen } = useModalContext();
+  const { isDrawerOpen, toggleDrawer } = useDrawerContext();
 
     return (
       <>
@@ -27,7 +25,7 @@ function HeaderAppBar( {onToggleDrawer, isDrawerOpen} : HeaderAppBarProps ) {
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
-                onClick={onToggleDrawer(!isDrawerOpen)}
+                onClick={() => toggleDrawer()}
               >
                 {isDrawerOpen ? <ArrowBackIosNewIcon /> : <MenuIcon />}
               </IconButton>
