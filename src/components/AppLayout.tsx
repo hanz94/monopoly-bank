@@ -10,7 +10,6 @@ import { useThemeContext } from '../contexts/ThemeContext';
 import { useModalContext } from '../contexts/ModalContext';
 
 function AppLayout() {
-    const { mode, toggleTheme } = useThemeContext();
     const { isModalOpen, modalClose, modalContent } = useModalContext();
 
     return ( 
