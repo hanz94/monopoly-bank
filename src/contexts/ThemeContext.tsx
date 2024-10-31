@@ -8,7 +8,7 @@ type ModeType = "light" | "dark" | null;
 interface ThemeContextType {
   mode: ModeType;
   setMode: (mode: ModeType) => void;
-  changeTheme: () => void;
+  toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -23,12 +23,12 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
     },
   });
 
-  const changeTheme = () => {
+  const toggleTheme = () => {
     setMode(mode === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <ThemeContext.Provider value={{ mode, setMode, changeTheme }}>
+    <ThemeContext.Provider value={{ mode, setMode, toggleTheme }}>
       <ThemeProvider theme={appTheme}>
         <CssBaseline />
         {children}

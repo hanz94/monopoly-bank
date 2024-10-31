@@ -5,15 +5,16 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { useModalContext } from '../../contexts/ModalContext';
+import modalContent from '../../utils/modalContent';
 
 type HeaderAppBarProps = {
   onToggleDrawer: (isDrawerOpen: boolean) => () => void
   isDrawerOpen: boolean
-  modals: any
 }
-function HeaderAppBar( {onToggleDrawer, isDrawerOpen, modals} : HeaderAppBarProps ) {
+function HeaderAppBar( {onToggleDrawer, isDrawerOpen} : HeaderAppBarProps ) {
 
-  // const modals = useModals();
+  const { modalOpen } = useModalContext();
 
     return (
       <>
@@ -33,7 +34,7 @@ function HeaderAppBar( {onToggleDrawer, isDrawerOpen, modals} : HeaderAppBarProp
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Monopoly Tool
               </Typography>
-              <Button color="inherit" onClick={() => modals.open(modals.contents.changeNicknameContent)}>Wybierz pseudonim</Button>
+              <Button color="inherit" onClick={() => modalOpen(modalContent.changeNicknameContent)}>Wybierz pseudonim</Button>
             </Toolbar>
           </AppBar>
       </>

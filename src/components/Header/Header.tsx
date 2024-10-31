@@ -2,13 +2,7 @@ import { useState } from "react";
 import HeaderAppBar from "./HeaderAppBar";  
 import DrawerLeft from "./DrawerLeft";
 
-type headerTypes = {
-    mode: "light" | "dark"
-    setMode: (mode: "light" | "dark") => void
-    modals: any
-}
-
-function Header({mode, setMode, modals}: headerTypes) {
+function Header() {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -18,8 +12,8 @@ function Header({mode, setMode, modals}: headerTypes) {
 
     return (
         <>
-            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} modals={modals} />
-            <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} mode={mode} setMode={setMode} />
+            <HeaderAppBar isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
+            <DrawerLeft isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
         </>
      );
 }

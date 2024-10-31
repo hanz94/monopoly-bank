@@ -13,15 +13,16 @@ import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useThemeContext } from '../../contexts/ThemeContext';
 
 type DrawerLeftProps = {
   isDrawerOpen: boolean;
   onToggleDrawer: (isDrawerOpen: boolean) => () => void;
-  mode: "light" | "dark";
-  setMode: (mode: "light" | "dark") => void;
 }
 
-export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode}: DrawerLeftProps ) {
+export default function DrawerLeft( {isDrawerOpen, onToggleDrawer}: DrawerLeftProps ) {
+
+const {mode, toggleTheme} = useThemeContext();
 
   const DrawerList = (
     <Box sx={{ width: 250 }} onClick={onToggleDrawer(false)}>
@@ -54,7 +55,7 @@ export default function DrawerLeft( {isDrawerOpen, onToggleDrawer, mode, setMode
         ))}
 
           <ListItem key={"Tryb wyświetlania"} disablePadding>
-            <ListItemButton onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}>
+            <ListItemButton onClick={() => toggleTheme()}>
               <ListItemIcon sx={{ml: 1}}>
               {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />} 
               </ListItemIcon>
