@@ -8,7 +8,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
-import modalContent from '../../utils/modalContent';
+import modalContent from '../../utils/newModalContent';
 import { useDrawerContext } from '../../contexts/DrawerContext';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 
@@ -36,7 +36,7 @@ function HeaderAppBar() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Monopoly Bank
               </Typography>
-              <Button color="inherit" onClick={() => modalOpen(modalContent.changeNicknameContent)}><SettingsIcon /></Button>
+              <Button color="inherit" onClick={() => modalOpen(modalContent.changeNickname)}><SettingsIcon /></Button>
               <DarkModeSwitch checked={mode === 'dark'} onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')} size={24} sunColor='currentColor' moonColor='currentColor'/>
             </Toolbar>
           </AppBar>

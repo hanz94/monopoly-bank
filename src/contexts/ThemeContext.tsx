@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocalStorageState } from '@toolpad/core';
+import { grey } from '@mui/material/colors';
 
 type ModeType = "light" | "dark" | null;
 
@@ -19,7 +20,31 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   const appTheme = createTheme({
     palette: {
-      mode: mode ?? 'dark',
+      mode: mode ?? 'light',
+      primary: {
+        main: mode === 'light' ? '#0000b3' : '#0039e6',
+      },
+      background: {
+        paper: mode === 'light' ? grey[200] : grey[900],
+      }
+    },
+    components: {
+      MuiAppBar: {
+        styleOverrides: {
+          colorPrimary: {
+            backgroundColor: mode === 'light' ? '#0000b3' : '#0039e6',
+          }
+        }
+      }
+    },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 400,
+        md: 900,
+        lg: 1200,
+        xl: 1536,
+      },
     },
   });
 
