@@ -11,7 +11,6 @@ import newModalContent from '../utils/newModalContent';
 import { Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../utils/animations';
-import { s } from 'framer-motion/client';
 
 
 function AppLayout() {
