@@ -3,6 +3,7 @@ import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocalStorageState } from '@toolpad/core';
 import { grey } from '@mui/material/colors';
+import { lighten } from '@mui/material';
 
 type ModeType = "light" | "dark" | null;
 
@@ -18,11 +19,24 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
   const prefersDarkMode = useMediaQuery<boolean>('(prefers-color-scheme: dark)');
   const [mode, setMode] = useLocalStorageState<ModeType>('selectedMode', prefersDarkMode ? 'dark' : 'light');
 
+  const themeColor = {
+    mainLight: lighten('#0000b3', 0.12),
+    mainDark: lighten('#0039e6', 0.17),
+    backgroundLight: grey[200],
+    backgroundDark: grey[900],
+    inputLight: function() {
+      return lighten(this.mainLight, 0.24);
+    },
+    inputDark: function() {
+      return lighten(this.mainDark, 0.48);
+    },
+  }
+
   const appTheme = createTheme({
     palette: {
       mode: mode ?? 'light',
       primary: {
-        main: mode === 'light' ? '#0000b3' : '#0039e6',
+        main: mode === 'light' ? themeColor.mainLight : themeColor.mainDark,
       },
       background: {
         paper: mode === 'light' ? grey[200] : grey[900],
@@ -32,10 +46,37 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
       MuiAppBar: {
         styleOverrides: {
           colorPrimary: {
-            backgroundColor: mode === 'light' ? '#0000b3' : '#0039e6',
+            backgroundColor: mode === 'light' ? themeColor.mainLight : themeColor.mainDark,
           }
         }
-      }
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          notchedOutline: {
+            borderColor: mode === 'light' ? themeColor.inputLight() : themeColor.inputDark(),
+          },
+          root: {
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: mode === 'light' ? themeColor.inputLight() : themeColor.inputDark(),
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: mode === 'light' ? themeColor.inputLight() : themeColor.inputDark(),
+            },
+          },
+        },
+      },
+      MuiInputLabel: {
+        styleOverrides: {
+          root: {
+            '&.Mui-focused': {
+              color: mode === 'light' ? themeColor.inputLight() : themeColor.inputDark(),
+            },
+            '&:hover': {
+              color: mode === 'light' ? themeColor.inputLight() : themeColor.inputDark(),
+            },
+          },
+        },
+      },
     },
     breakpoints: {
       values: {

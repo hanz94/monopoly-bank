@@ -1,11 +1,5 @@
-import {
-  Modal,
-  Box,
-  Typography,
-  IconButton,
-  useTheme,
-  styled,
-} from '@mui/material';
+import { Modal, Box, Typography, IconButton, useTheme, styled } from '@mui/material';
+import { lighten } from '@mui/system';
 import CloseIcon from '@mui/icons-material/Close';
 
 interface ModalWindowProps {
@@ -23,10 +17,10 @@ const ModalContent = styled(Box)(({ theme }) => ({
   transform: 'translate(-50%, -50%)',
   width: 400,
   maxWidth: '85%',
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: lighten(theme.palette.background.paper, 0.125),
   boxShadow: theme.shadows[24],
   borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(2.7),
+  padding: theme.spacing(2.5),
   outline: 'none',
 }));
 
