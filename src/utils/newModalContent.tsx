@@ -1,6 +1,7 @@
-import { FormControl, Select, TextField, InputLabel, MenuItem, Button } from "@mui/material";
+import { Typography, FormControl, Select, TextField, InputLabel, MenuItem, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { Typography } from "@mui/material";
+import { motion } from "framer-motion";
+import { scaleOnHoverSmall } from "./animations";
 
     const newModalContent = {
             changeNickname: {
@@ -75,7 +76,7 @@ import { Typography } from "@mui/material";
                             </Grid>
                             <Grid size={12}>
                                 <FormControl fullWidth required>
-                                    <Button variant="contained" sx={{p: 1.4}}>Stwórz grę</Button>
+                                    <Button variant="contained" component={motion.button} {...scaleOnHoverSmall} sx={{p: 1.4}}>Stwórz grę</Button>
                                 </FormControl>
                             </Grid>
                         </Grid>
@@ -98,7 +99,7 @@ import { Typography } from "@mui/material";
                             </Grid>
                             <Grid size={12}>
                                 <FormControl fullWidth required>
-                                    <Button variant="contained" sx={{p: 1.4}}>Dołącz</Button>
+                                    <Button variant="contained" component={motion.button} {...scaleOnHoverSmall} sx={{p: 1.4}}>Dołącz</Button>
                                 </FormControl>
                             </Grid>
                         </Grid>

@@ -39,7 +39,7 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
         main: mode === 'light' ? themeColor.mainLight : themeColor.mainDark,
       },
       background: {
-        paper: mode === 'light' ? grey[200] : grey[900],
+        paper: mode === 'light' ? themeColor.backgroundLight : themeColor.backgroundDark,
       }
     },
     components: {
