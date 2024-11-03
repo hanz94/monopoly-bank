@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Typography, FormControl, Select, TextField, InputLabel, MenuItem, Button } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import { useModalContext } from "../../contexts/ModalContext";
 import { motion } from "framer-motion";
 import { scaleOnHoverSmall } from "../../utils/animations";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 type Errors = {
     currency?: string;
@@ -12,6 +14,10 @@ type Errors = {
 };
 
 function NewGame() {
+
+    const navigate = useNavigate();
+    const { modalClose } = useModalContext();
+
     const [currency, setCurrency] = useState("PLN");
     const [initialBalance, setInitialBalance] = useState<string>("1500"); // Allow empty input with string type
     const [crossStartBonus, setCrossStartBonus] = useState<string>("200"); // Allow empty input with string type
@@ -51,7 +57,16 @@ function NewGame() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            console.log(currency, initialBalance, crossStartBonus, numberOfPlayers);
+            navigate({
+                pathname: "/new",
+                search: createSearchParams({
+                    currency: currency,
+                    initialBalance: initialBalance,
+                    crossStartBonus: crossStartBonus,
+                    numberOfPlayers: numberOfPlayers.toString()
+                }).toString(),
+            });
+            modalClose();
         }
     };
 

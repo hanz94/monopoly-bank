@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { FormControl, TextField, Button, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import { useModalContext } from "../../contexts/ModalContext";
 import { motion } from "framer-motion";
 import { scaleOnHoverSmall } from "../../utils/animations";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 function JoinGame() {
+
+    const navigate = useNavigate();
+    const { modalClose } = useModalContext();
+
     const [playerGameCode, setPlayerGameCode] = useState("");
     const [error, setError] = useState(""); // Track validation error
 
@@ -21,7 +27,15 @@ function JoinGame() {
         }
 
         setError(""); // Clear any existing error
-        console.log(playerGameCode); // Code is valid, proceed with the form submission
+
+        // Code is valid, proceed with the form submission
+        navigate({
+            pathname: "/join",
+            search: createSearchParams({
+                c: playerGameCode,
+            }).toString(),
+        });
+        modalClose();
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
