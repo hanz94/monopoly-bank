@@ -16,7 +16,7 @@ function JoinGame() {
 
         // Validate that the code is exactly 6 characters
         if (playerGameCode.length !== 6) {
-            setError("Kod musi mieć 6 znaków.");
+            setError("Kod musi zawierać 6 znaków.");
             return;
         }
 

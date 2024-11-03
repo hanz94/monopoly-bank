@@ -2,10 +2,12 @@ import { Typography, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 
 function NoPage() {
 
     const { mode } = useThemeContext();
+    const navigate = useNavigate();
 
     return ( 
         <>
@@ -42,7 +44,7 @@ function NoPage() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4 }} 
-                    onClick={() => console.log('powrót')}
+                    onClick={() => navigate('/')}
                 >
                     Powrót do strony głównej
                 </Button>
