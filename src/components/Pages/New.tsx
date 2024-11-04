@@ -9,12 +9,11 @@ function New() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
 
-    const currency = searchParams.get('currency');
-    const initialBalance = searchParams.get('initialBalance');
-    const crossStartBonus = searchParams.get('crossStartBonus');
-    const numberOfPlayers = searchParams.get('numberOfPlayers');
+    const currency = location.state?.cr
+    const initialBalance = location.state?.ib
+    const crossStartBonus = location.state?.csb
+    const numberOfPlayers = location.state?.np
 
     useEffect(() => {
         // Redirect to /404 if the values are invalid

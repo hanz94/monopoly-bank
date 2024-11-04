@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid2";
 import { useModalContext } from "../../contexts/ModalContext";
 import { motion } from "framer-motion";
 import { scaleOnHoverSmall } from "../../utils/animations";
-import { createSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function JoinGame() {
 
@@ -29,12 +29,7 @@ function JoinGame() {
         setError(""); // Clear any existing error
 
         // Code is valid, proceed with the form submission
-        navigate({
-            pathname: "/join",
-            search: createSearchParams({
-                c: playerGameCode,
-            }).toString(),
-        });
+        navigate("/join", { state: { c: playerGameCode } });
         modalClose();
     };
 

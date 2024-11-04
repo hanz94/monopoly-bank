@@ -10,9 +10,8 @@ function Join() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
 
-    const playerGameCode = searchParams.get('c');
+    const playerGameCode = location.state?.c;
 
     useEffect(() => {
         // Redirect to /404 if the code is invalid
