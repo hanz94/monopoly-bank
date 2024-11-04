@@ -57,15 +57,6 @@ function NewGame() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            // navigate({
-            //     pathname: "/new",
-            //     search: createSearchParams({
-            //         currency: currency,
-            //         initialBalance: initialBalance,
-            //         crossStartBonus: crossStartBonus,
-            //         numberOfPlayers: numberOfPlayers.toString()
-            //     }).toString(),
-            // });
             navigate("/new", { state: { cr: currency, ib: initialBalance, csb: crossStartBonus, np: numberOfPlayers } });
             modalClose();
         }

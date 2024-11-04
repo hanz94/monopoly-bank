@@ -1,11 +1,16 @@
 import { Typography, Button } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { useEffect } from 'react';
+import { useModalContext } from '../../contexts/ModalContext';
+import newModalContent from '../../utils/newModalContent';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function New() {
+
+    const { modalOpen } = useModalContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -51,39 +56,79 @@ function New() {
             )}
 
             <div className="text-center">
-                <Typography sx={{ fontSize: 24, fontWeight: 'bold' }}>
-                    Monopoly Bank
-                </Typography>
-                <Typography sx={{ px: 1.4, mb: 6 }}>
-                    Nowy bezgotówkowy system płatności w Monopoly!
-                </Typography>
-                <Typography sx={{ px: 1.4, mb: 1, fontWeight: 'bold' }}>
+                <Typography sx={{ px: 1.4, mb: 1, mt: 2, fontWeight: 'bold' }}>
                     Wprowadzone parametry:
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1 }}>
-                    Waluta: {currency}
+                    Waluta: <b>{currency}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1 }}>
-                    Początkowy stan konta: {initialBalance}
+                    Początkowy stan konta: <b>{initialBalance}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1 }}>
-                    Dodatek "Przejście przez START": {crossStartBonus}
+                    Dodatek "Przejście przez START": <b>{crossStartBonus}</b>
                 </Typography>
-                <Typography sx={{ px: 1.4, mb: 6 }}>
-                    Liczba graczy: {numberOfPlayers}
+                <Typography sx={{ px: 1.4, mb: 1 }}>
+                    Liczba graczy: <b>{numberOfPlayers}</b>
+                </Typography>
+                <Typography sx={{ px: 1.4, mb: 5, fontWeight: 'bold' }}>
+                    Następny krok: Konfiguracja graczy
                 </Typography>
 
             </div>
 
-            <Button 
-                variant="contained" 
-                component={motion.button} 
-                {...scaleOnHover} 
-                sx={{ p: 1.4 }} 
-                onClick={() => navigate('/')}
-            >
-                Powrót do strony głównej
-            </Button>
+            <Grid container spacing={{ xs: 2, sm: 2 }} justifyContent='center'>
+
+                <Grid size={{xs: 12, sm: 3.5}} sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Button 
+                        variant="contained" 
+                        component={motion.button} 
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4 }} 
+                        onClick={() => modalOpen(newModalContent.newGame)}
+                    >
+                        Zmień parametry
+                    </Button>
+                </Grid>
+
+                <Grid size={{xs: 12, sm: 3.5}} sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Button 
+                        variant="contained" 
+                        component={motion.button} 
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4 }} 
+                        onClick={() => modalOpen(newModalContent.defineNewPlayers)}
+                    >
+                        Konfiguruj graczy
+                    </Button>
+                </Grid>
+
+                <Grid size={12} sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Button 
+                        variant="contained" 
+                        component={motion.button} 
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4 }} 
+                        onClick={() => navigate('/')}
+                        disabled={true}
+                    >
+                        Stwórz grę
+                    </Button>
+                </Grid>
+
+                <Grid size={12} sx={{display: 'flex', justifyContent: 'center'}}>
+                    <Button 
+                        variant="contained" 
+                        component={motion.button} 
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4 }} 
+                        onClick={() => navigate('/')}
+                    >
+                        Powrót do strony głównej
+                    </Button>
+                </Grid>
+
+            </Grid>
         </>
      );
 }
