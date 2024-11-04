@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid2";
 import { useModalContext } from "../../contexts/ModalContext";
 import { motion } from "framer-motion";
 import { scaleOnHoverSmall } from "../../utils/animations";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 type Errors = {
     currency?: string;
@@ -16,12 +16,13 @@ type Errors = {
 function NewGame() {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const { modalClose } = useModalContext();
 
-    const [currency, setCurrency] = useState("PLN");
-    const [initialBalance, setInitialBalance] = useState<string>("1500"); // Allow empty input with string type
-    const [crossStartBonus, setCrossStartBonus] = useState<string>("200"); // Allow empty input with string type
-    const [numberOfPlayers, setNumberOfPlayers] = useState(4);
+    const [currency, setCurrency] = useState(() => location.state?.cr || "PLN");
+    const [initialBalance, setInitialBalance] = useState<string>(() => location.state?.ib || "1500"); // Allow empty input with string type
+    const [crossStartBonus, setCrossStartBonus] = useState<string>(() => location.state?.csb || "200"); // Allow empty input with string type
+    const [numberOfPlayers, setNumberOfPlayers] = useState(() => location.state?.np || 4);
     const [errors, setErrors] = useState<Errors>({});
 
     const validateForm = () => {
