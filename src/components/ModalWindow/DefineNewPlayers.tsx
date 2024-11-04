@@ -12,47 +12,85 @@ function DefineNewPlayers() {
         throw new Error('[DefineNewPlayers] Invalid location state (np). Correct number of players must be defined.');
     }
 
-    // Initialize playerNames with a function that generates the default names array based on `np`
-    const [playerNames, setPlayerNames] = useState<string[]>(() => {
-        const defaultNames = [];
-        for (let i = 0; i < location.state.np; i++) {
-            defaultNames.push(`Gracz ${i + 1}`);
+    // Initialize playerNames and error messages
+    const [playerNames, setPlayerNames] = useState<string[]>(
+        Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`)
+    );
+    const [errors, setErrors] = useState<string[]>(Array(location.state.np).fill(""));
+
+    const validatePlayerName = (name: string) => {
+        if (name.length > 20) {
+            return "Długość pseudonimu nie może przekraczać 20 znaków.";
         }
-        return defaultNames;
-    });
+        if (!/^[a-zA-Z0-9 ]*$/.test(name)) {
+            return "Wykryto niedozwolone znaki.";
+        }
+        return "";
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+        const value = e.target.value;
+
+        // Update player name
+        setPlayerNames((prevNames) => {
+            const newNames = [...prevNames];
+            newNames[index] = value;
+            return newNames;
+        });
+
+        // Validate and update errors
+        setErrors((prevErrors) => {
+            const newErrors = [...prevErrors];
+            newErrors[index] = validatePlayerName(value);
+            return newErrors;
+        });
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(playerNames);
+
+        // Check for any remaining errors
+        const validationErrors = playerNames.map(validatePlayerName);
+        setErrors(validationErrors);
+
+        // If no errors, proceed with form submission
+        if (validationErrors.every((error) => error === "")) {
+            console.log("Player Names:", playerNames);
+            // Additional logic for form submission can go here
+        }
     };
 
     return (
         <>
             <Typography sx={{ p: 1, textAlign: 'center' }}>Hmm... to kogoś jeszcze nie znam?</Typography>
             <form autoComplete="off" onSubmit={handleSubmit}>
-                {playerNames.map(( _, index) => (
-                    <FormControl key={index} required fullWidth>
+                {playerNames.map((_, index) => (
+                    <FormControl key={index} required fullWidth sx={{ my: 0.8 }}>
                         <TextField
                             label={`Gracz ${index + 1}`}
                             type="text"
-                            placeholder={'Pseudonim'}
-                            onChange={(e) => {
-                                setPlayerNames((prevNames) => {
-                                    const newNames = [...prevNames];
-                                    newNames[index] = e.target.value;
-                                    return newNames;
-                                })
+                            placeholder="Pseudonim"
+                            onChange={(e) => handleInputChange(e, index)}
+                            inputProps={{
+                                maxLength: 20,
                             }}
-                            sx={{ my: 0.8 }} />
+                            error={!!errors[index]}
+                            helperText={errors[index]}
+                        />
                     </FormControl>
                 ))}
 
-                    <FormControl fullWidth required>
-                        <Button variant="contained" component={motion.button} {...scaleOnHoverSmall} sx={{ p: 1.4, mt: 1.4 }}>
-                            Zapisz
-                        </Button>
-                    </FormControl>
-
+                <FormControl fullWidth>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        component={motion.button}
+                        {...scaleOnHoverSmall}
+                        sx={{ p: 1.4, mt: 1.4 }}
+                    >
+                        Zapisz
+                    </Button>
+                </FormControl>
             </form>
         </>
     );
