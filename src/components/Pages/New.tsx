@@ -2,6 +2,7 @@ import { Typography, Button } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useEffect } from 'react';
 import { useModalContext } from '../../contexts/ModalContext';
+import { useGameContext } from '../../contexts/GameContext';
 import newModalContent from '../../utils/newModalContent';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../../utils/animations';
@@ -11,6 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 function New() {
 
     const { modalOpen } = useModalContext();
+    const { playerNames, setPlayerNames, playerNamesDefined, setPlayerNamesDefined } = useGameContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,6 +21,13 @@ function New() {
     const initialBalance = location.state?.ib
     const crossStartBonus = location.state?.csb
     const numberOfPlayers = location.state?.np
+
+    
+    useEffect(() => {
+        setPlayerNames([]);
+        setPlayerNames(Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`));
+        setPlayerNamesDefined(false)
+    }, [numberOfPlayers]);
 
     useEffect(() => {
         // Redirect to /404 if the values are invalid
@@ -69,10 +78,10 @@ function New() {
                     Dodatek "Przejście przez START": <b>{crossStartBonus}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1 }}>
-                    Liczba graczy: <b>{numberOfPlayers}</b>
+                     Liczba graczy: <b>{numberOfPlayers} {playerNamesDefined ? `(${playerNames.join(", ")})` : ''}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 5, fontWeight: 'bold' }}>
-                    Następny krok: Konfiguracja graczy
+                    {playerNamesDefined ? 'Gotowi! Zaczynamy?' : 'Następny krok: Konfiguracja graczy'}
                 </Typography>
 
             </div>
@@ -110,9 +119,9 @@ function New() {
                         {...scaleOnHover} 
                         sx={{ p: 1.4 }} 
                         onClick={() => navigate('/')}
-                        disabled={true}
+                        disabled={!playerNamesDefined}
                     >
-                        Stwórz grę
+                        Rozpocznij grę
                     </Button>
                 </Grid>
 

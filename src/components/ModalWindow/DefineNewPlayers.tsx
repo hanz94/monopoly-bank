@@ -1,10 +1,15 @@
 import { FormControl, TextField, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { useLocation } from 'react-router-dom';
+import { useModalContext } from "../../contexts/ModalContext";
+import { useGameContext } from "../../contexts/GameContext";
 import { motion } from "framer-motion";
 import { scaleOnHoverSmall } from "../../utils/animations";
 
 function DefineNewPlayers() {
+
+    const { playerNames, setPlayerNames, setPlayerNamesDefined } = useGameContext();
+    const { modalClose } = useModalContext();
     const location = useLocation();
 
     // Validate and throw error if `np` is not within valid bounds
@@ -12,10 +17,10 @@ function DefineNewPlayers() {
         throw new Error('[DefineNewPlayers] Invalid location state (np). Correct number of players must be defined.');
     }
 
-    // Initialize playerNames and error messages
-    const [playerNames, setPlayerNames] = useState<string[]>(
-        Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`)
-    );
+    // const [playerNames, setPlayerNames] = useState<string[]>(
+    //     Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`)
+    // );
+
     const [errors, setErrors] = useState<string[]>(Array(location.state.np).fill(""));
 
     const validatePlayerName = (name: string) => {
@@ -32,14 +37,14 @@ function DefineNewPlayers() {
         const value = e.target.value;
 
         // Update player name
-        setPlayerNames((prevNames) => {
+        setPlayerNames((prevNames: string[]) => {
             const newNames = [...prevNames];
             newNames[index] = value;
             return newNames;
         });
 
         // Validate and update errors
-        setErrors((prevErrors) => {
+        setErrors((prevErrors: string[]) => {
             const newErrors = [...prevErrors];
             newErrors[index] = validatePlayerName(value);
             return newErrors;
@@ -55,8 +60,8 @@ function DefineNewPlayers() {
 
         // If no errors, proceed with form submission
         if (validationErrors.every((error) => error === "")) {
-            console.log("Player Names:", playerNames);
-            // Additional logic for form submission can go here
+            setPlayerNamesDefined(true);
+            modalClose();
         }
     };
 
