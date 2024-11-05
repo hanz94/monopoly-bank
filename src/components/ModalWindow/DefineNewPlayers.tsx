@@ -16,11 +16,7 @@ function DefineNewPlayers() {
     if (!location.state || !location.state.np || typeof location.state.np !== 'number' || location.state.np < 2 || location.state.np > 6) {
         throw new Error('[DefineNewPlayers] Invalid location state (np). Correct number of players must be defined.');
     }
-
-    // const [playerNames, setPlayerNames] = useState<string[]>(
-    //     Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`)
-    // );
-
+    
     const [errors, setErrors] = useState<string[]>(Array(location.state.np).fill(""));
 
     const validatePlayerName = (name: string) => {

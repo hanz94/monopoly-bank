@@ -12,7 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 function New() {
 
     const { modalOpen } = useModalContext();
-    const { playerNames, setPlayerNames, playerNamesDefined, setPlayerNamesDefined } = useGameContext();
+    const { setGameInfo, setGameSessionActive, playerNames, setPlayerNames, playerNamesDefined, setPlayerNamesDefined } = useGameContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -118,7 +118,17 @@ function New() {
                         component={motion.button} 
                         {...scaleOnHover} 
                         sx={{ p: 1.4 }} 
-                        onClick={() => navigate('/')}
+                        onClick={() => {
+                            setGameSessionActive(true);
+                            setGameInfo({
+                                currency: currency,
+                                initialBalance: initialBalance, 
+                                crossStartBonus: crossStartBonus, 
+                                numberOfPlayers: numberOfPlayers,
+                                playerNamesArray: playerNames,
+                            });
+                            navigate('/bank')
+                        }}
                         disabled={!playerNamesDefined}
                     >
                         Rozpocznij grę

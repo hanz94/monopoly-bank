@@ -1,18 +1,27 @@
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
+import { useEffect } from 'react';
 import newModalContent from '../../utils/newModalContent';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../../utils/animations';
-import { useModalContext } from '../../contexts/ModalContext';
 import { useThemeContext } from '../../contexts/ThemeContext';
+import { useModalContext } from '../../contexts/ModalContext';
+import { useGameContext } from '../../contexts/GameContext';
 
 function MainPage() {
     const { mode } = useThemeContext();
     const { modalOpen } = useModalContext();
+    const { resetGameContext } = useGameContext();
+
+    //reset game context
+    useEffect(() => {
+        resetGameContext();
+    }, []);
 
     return (
         <>
+
             {mode === 'dark' ? (
                 <motion.img 
                     src={'/src/assets/m-logo-white.png'} 

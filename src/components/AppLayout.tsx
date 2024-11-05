@@ -9,6 +9,7 @@ import MainPage from './Pages/MainPage';
 import NoPage from './Pages/NoPage';
 import Join from './Pages/Join';
 import New from './Pages/New';
+import Bank from './Pages/Bank';
 
 
 function AppLayout() {
@@ -32,6 +33,7 @@ function AppLayout() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/new" element={<New />} />
                 <Route path="/join" element={<Join />} />
+                <Route path="/bank" element={<Bank />} />
                 <Route path="/404" element={<NoPage />} />
                 <Route path="*" element={<NoPage />} />
               </Routes>
