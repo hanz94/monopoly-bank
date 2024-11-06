@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate } from "react-router-dom";
+import PlayerCard from "../PlayerCard";
 
 function Bank() {
 
@@ -15,7 +16,13 @@ function Bank() {
 
     return ( 
         <div>
-            <h1>Bank</h1>
+            {gameInfo.playerNamesArray.map((playerName, index) => (
+                <div key={index}>
+                    <PlayerCard
+                        playerName={playerName} 
+                        playerBalace={gameInfo.initialBalance} />
+                </div>
+            ))}
         </div>
      );
 }
