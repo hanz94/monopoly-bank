@@ -8,6 +8,8 @@ import { bounce, scaleOnHover } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
 import { useGameContext } from '../../contexts/GameContext';
+import { createGame } from '../../database/createGame';
+import { deleteGame } from '../../database/deleteGame';
 
 function MainPage() {
     const { mode } = useThemeContext();
@@ -17,6 +19,14 @@ function MainPage() {
     //reset game context
     useEffect(() => {
         resetGameContext();
+        // createGame({
+        //     currency: 'PLN',
+        //     initialBalance: 1500,
+        //     crossStartBonus: 0,
+        //     numberOfPlayers: 4,
+        //     playerNames: ['P1', 'P2', 'P3', 'P4'],
+        // });
+        // deleteGame(816084);
     }, []);
 
     return (

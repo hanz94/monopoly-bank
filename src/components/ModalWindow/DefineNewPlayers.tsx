@@ -8,7 +8,7 @@ import { scaleOnHoverSmall } from "../../utils/animations";
 
 function DefineNewPlayers() {
 
-    const { playerNames, setPlayerNames, setPlayerNamesDefined } = useGameContext();
+    const { newPlayerNames, setNewPlayerNames, setNewPlayerNamesDefined } = useGameContext();
     const { modalClose } = useModalContext();
     const location = useLocation();
 
@@ -33,7 +33,7 @@ function DefineNewPlayers() {
         const value = e.target.value;
 
         // Update player name
-        setPlayerNames((prevNames: string[]) => {
+        setNewPlayerNames((prevNames: string[]) => {
             const newNames = [...prevNames];
             newNames[index] = value;
             return newNames;
@@ -51,12 +51,12 @@ function DefineNewPlayers() {
         e.preventDefault();
 
         // Check for any remaining errors
-        const validationErrors = playerNames.map(validatePlayerName);
+        const validationErrors = newPlayerNames.map(validatePlayerName);
         setErrors(validationErrors);
 
         // If no errors, proceed with form submission
         if (validationErrors.every((error) => error === "")) {
-            setPlayerNamesDefined(true);
+            setNewPlayerNamesDefined(true);
             modalClose();
         }
     };
@@ -65,7 +65,7 @@ function DefineNewPlayers() {
         <>
             <Typography sx={{ p: 1, textAlign: 'center' }}>Hmm... to kogoś jeszcze nie znam?</Typography>
             <form autoComplete="off" onSubmit={handleSubmit}>
-                {playerNames.map((_, index) => (
+                {newPlayerNames.map((_, index) => (
                     <FormControl key={index} required fullWidth sx={{ my: 0.8 }}>
                         <TextField
                             label={`Gracz ${index + 1}`}

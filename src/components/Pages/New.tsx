@@ -5,14 +5,16 @@ import { useModalContext } from '../../contexts/ModalContext';
 import { useGameContext } from '../../contexts/GameContext';
 import newModalContent from '../../utils/newModalContent';
 import { motion } from 'framer-motion';
-import { bounce, scaleOnHover } from '../../utils/animations';
+import { bounce, scaleOnHover, pulse } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { create } from '@mui/material/styles/createTransitions';
+import { createGame } from '../../database/createGame';
 
 function New() {
 
     const { modalOpen } = useModalContext();
-    const { setGameInfo, setGameSessionActive, playerNames, setPlayerNames, playerNamesDefined, setPlayerNamesDefined } = useGameContext();
+    const { setGameInfo, setGameSessionActive, newPlayerNames, setNewPlayerNames, newPlayerNamesDefined, setNewPlayerNamesDefined } = useGameContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,9 +26,9 @@ function New() {
 
     
     useEffect(() => {
-        setPlayerNames([]);
-        setPlayerNames(Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`));
-        setPlayerNamesDefined(false)
+        setNewPlayerNames([]);
+        setNewPlayerNames(Array.from({ length: location.state.np }, (_, i) => `Gracz ${i + 1}`));
+        setNewPlayerNamesDefined(false)
     }, [numberOfPlayers]);
 
     useEffect(() => {
@@ -78,10 +80,10 @@ function New() {
                     Dodatek "Przejście przez START": <b>{crossStartBonus}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1 }}>
-                     Liczba graczy: <b>{numberOfPlayers} {playerNamesDefined ? `(${playerNames.join(", ")})` : ''}</b>
+                     Liczba graczy: <b>{numberOfPlayers} {newPlayerNamesDefined ? `(${newPlayerNames.join(", ")})` : ''}</b>
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 5, fontWeight: 'bold' }}>
-                    {playerNamesDefined ? 'Gotowi! Zaczynamy?' : 'Następny krok: Konfiguracja graczy'}
+                    {newPlayerNamesDefined ? 'Gotowi! Zaczynamy?' : 'Następny krok: Konfiguracja graczy'}
                 </Typography>
 
             </div>
@@ -104,7 +106,8 @@ function New() {
                     <Button 
                         variant="contained" 
                         component={motion.button} 
-                        {...scaleOnHover} 
+                        {...scaleOnHover}
+                        {...(!newPlayerNamesDefined && pulse)}
                         sx={{ p: 1.4 }} 
                         onClick={() => modalOpen(newModalContent.defineNewPlayers)}
                     >
@@ -118,18 +121,28 @@ function New() {
                         component={motion.button} 
                         {...scaleOnHover} 
                         sx={{ p: 1.4 }} 
-                        onClick={() => {
-                            setGameSessionActive(true);
-                            setGameInfo({
+                        onClick={async () => {
+                            // setGameInfo({
+                            //     currency: currency,
+                            //     initialBalance: initialBalance, 
+                            //     crossStartBonus: crossStartBonus, 
+                            //     numberOfPlayers: numberOfPlayers,
+                            //     gameID: 123,
+                            //     playerCode: 'AAAAAA',
+                            //     token: 'asdf',
+                            //     playerNames: newPlayerNames,
+                            // });
+                            //redirect to server component
+                            const {newId, newThisPlayerCode, newToken} =  await createGame({
                                 currency: currency,
                                 initialBalance: initialBalance, 
                                 crossStartBonus: crossStartBonus, 
                                 numberOfPlayers: numberOfPlayers,
-                                playerNamesArray: playerNames,
+                                playerNames: newPlayerNames
                             });
-                            navigate('/bank')
+                            navigate('/bank', { state: { gameID: newId, playerCode: newThisPlayerCode, token: newToken } });
                         }}
-                        disabled={!playerNamesDefined}
+                        disabled={!newPlayerNamesDefined}
                     >
                         Rozpocznij grę
                     </Button>

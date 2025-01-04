@@ -5,7 +5,10 @@ type GameInfo = {
   initialBalance: string;
   crossStartBonus: string;
   numberOfPlayers: number;
-  playerNamesArray: string[];
+  gameID: number;
+  playerCode: string;
+  token: string;
+  playerNames: string[];
 };
 
 interface GameContextType {
@@ -13,10 +16,10 @@ interface GameContextType {
   setGameSessionActive: React.Dispatch<React.SetStateAction<boolean>>;
   gameInfo: GameInfo;
   setGameInfo: React.Dispatch<React.SetStateAction<GameInfo>>;
-  playerNames: string[];
-  setPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
-  playerNamesDefined: boolean;
-  setPlayerNamesDefined: React.Dispatch<React.SetStateAction<boolean>>;
+  newPlayerNames: string[];
+  setNewPlayerNames: React.Dispatch<React.SetStateAction<string[]>>;
+  newPlayerNamesDefined: boolean;
+  setNewPlayerNamesDefined: React.Dispatch<React.SetStateAction<boolean>>;
   resetGameContext: () => void;
 }
 
@@ -30,15 +33,18 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
     initialBalance: "1500",
     crossStartBonus: "200",
     numberOfPlayers: 4,
-    playerNamesArray: [],
+    gameID: 0,
+    playerCode: "",
+    token: "",
+    playerNames: [],
   });
 
-  const [playerNames, setPlayerNames] = useState<string[]>([]);
-  const [playerNamesDefined, setPlayerNamesDefined] = useState<boolean>(false);
+  const [newPlayerNames, setNewPlayerNames] = useState<string[]>([]);
+  const [newPlayerNamesDefined, setNewPlayerNamesDefined] = useState<boolean>(false);
 
   const resetGameContext = () => {
-    setPlayerNames([]);
-    setPlayerNamesDefined(false);
+    setNewPlayerNames([]);
+    setNewPlayerNamesDefined(false);
     setGameSessionActive(false);
     setGameInfo({} as GameInfo);
   };
@@ -46,10 +52,10 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <GameContext.Provider
       value={{
-        playerNames,
-        setPlayerNames,
-        playerNamesDefined,
-        setPlayerNamesDefined,
+        newPlayerNames,
+        setNewPlayerNames,
+        newPlayerNamesDefined,
+        setNewPlayerNamesDefined,
         gameSessionActive,
         setGameSessionActive,
         gameInfo,

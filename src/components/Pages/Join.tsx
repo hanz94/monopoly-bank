@@ -10,21 +10,17 @@ function Join() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { mode } = useThemeContext();
 
-    const playerGameCode = location.state?.c;
+    const gameID = location.state?.gameID;
+    const playerGameCode = location.state?.playerCode;
 
+    // Redirect to /404 if the code is invalid
     useEffect(() => {
-        // Redirect to /404 if the code is invalid
-        if (!playerGameCode || playerGameCode.length !== 6) {
+        if (!gameID || isNaN(parseInt(gameID)) || !playerGameCode || playerGameCode.length !== 6) {
             navigate('/404', { replace: true });
         }
     }, [playerGameCode, navigate]);
-
-    const { mode } = useThemeContext();
-
-    if (!playerGameCode || playerGameCode.length !== 6) {
-        return null;
-    }
 
     return ( 
         <>
@@ -57,6 +53,9 @@ function Join() {
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 1, fontWeight: 'bold' }}>
                     Wprowadzone parametry:
+                </Typography>
+                <Typography sx={{ px: 1.4, mb: 1 }}>
+                    Identyfikator gry: {gameID}
                 </Typography>
                 <Typography sx={{ px: 1.4, mb: 6 }}>
                     Indywidualny kod gracza: {playerGameCode}
