@@ -10,6 +10,7 @@ import NoPage from './Pages/NoPage';
 import Join from './Pages/Join';
 import New from './Pages/New';
 import Bank from './Pages/Bank';
+import SessionExpired from './Pages/SessionExpired';
 
 
 function AppLayout() {
@@ -17,23 +18,21 @@ function AppLayout() {
 
     return ( 
     <>
-
-        <Box className="flex flex-col justify-center items-center height-full-mobile-support">
-
           <Header />
           
-          <Paper elevation={0} className='flex flex-col justify-center items-center' sx={{height: '100%', width: '100%'}} square>
-            <Box className="flex flex-col justify-center items-center" sx={{mt: -5}}>
+          <Paper elevation={0} sx={{ width: '100%', height: 'calc(100% - 64px)', overflow: 'auto', position: 'fixed', top: 64, display: 'grid', placeItems: 'center' }} square>
+            <Box className="flex flex-col justify-center items-center" sx={{ margin: 'auto' }}>
 
             <BrowserRouter>
 
-            <ModalWindow open={isModalOpen} onClose={modalClose} modalContent={currentModalContent} />
+              <ModalWindow open={isModalOpen} onClose={modalClose} modalContent={currentModalContent} />
 
               <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/new" element={<New />} />
                 <Route path="/join" element={<Join />} />
                 <Route path="/bank" element={<Bank />} />
+                <Route path="/session-expired" element={<SessionExpired />} />
                 <Route path="/404" element={<NoPage />} />
                 <Route path="*" element={<NoPage />} />
               </Routes>
@@ -41,7 +40,6 @@ function AppLayout() {
 
             </Box>
           </Paper>
-        </Box> 
     </>
         
     );
