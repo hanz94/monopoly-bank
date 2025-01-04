@@ -68,7 +68,7 @@ function DefineNewPlayers() {
                 {newPlayerNames.map((_, index) => (
                     <FormControl key={index} required fullWidth sx={{ my: 0.8 }}>
                         <TextField
-                            label={`Gracz ${index + 1}`}
+                            label={index === 0 ? "Gracz 1 (Ty)" : `Gracz ${index + 1}`}
                             type="text"
                             placeholder="Pseudonim"
                             onChange={(e) => handleInputChange(e, index)}

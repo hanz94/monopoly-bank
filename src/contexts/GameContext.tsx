@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
-
+import { db } from "../database/firebaseConfig";
+import { get, ref, set } from "firebase/database";
 type GameInfo = {
   currency: string;
   initialBalance: string;
@@ -11,6 +12,14 @@ type GameInfo = {
   playerNames: string[];
 };
 
+type DbPlayersInfo = {
+  [key: string]: {
+      name: string,
+      balance: number,
+      status: string
+  }
+}
+
 interface GameContextType {
   gameSessionActive: boolean;
   setGameSessionActive: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +30,9 @@ interface GameContextType {
   newPlayerNamesDefined: boolean;
   setNewPlayerNamesDefined: React.Dispatch<React.SetStateAction<boolean>>;
   resetGameContext: () => void;
+  dbPlayersInfo: DbPlayersInfo;
+  setDbPlayersInfo: React.Dispatch<React.SetStateAction<DbPlayersInfo>>;
+  updateOnlineStatus: (gameID: number, playerCode: string, status: string) => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -49,6 +61,27 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
     setGameInfo({} as GameInfo);
   };
 
+  const updateOnlineStatus = async (gameID: number, playerCode: string, status: string) => {
+      const nodeRef = ref(db, `/games/game-${gameID}/players/${playerCode}/status`);
+  
+      try {
+          // Check if the node exists
+          const snapshot = await get(nodeRef);
+  
+          if (snapshot.exists()) {
+              // Update the status if the node exists
+              await set(nodeRef, status);
+              console.log(`Status updated to "${status}" for player ${playerCode} in game ${gameID}.`);
+          } else {
+              console.log(`Node does not exist for player ${playerCode} in game ${gameID}.`);
+          }
+      } catch (error) {
+          console.error("Error updating online status:", error);
+      }
+  };
+
+  const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
+
   return (
     <GameContext.Provider
       value={{
@@ -61,6 +94,9 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         gameInfo,
         setGameInfo,
         resetGameContext,
+        dbPlayersInfo,
+        setDbPlayersInfo,
+        updateOnlineStatus
       }}
     >
       {children}

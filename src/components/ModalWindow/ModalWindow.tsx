@@ -42,8 +42,8 @@ export default function ModalWindow({
     <Modal
       open={open}
       onClose={onClose}
-      aria-labelledby="theme-aware-modal-title"
-      aria-describedby="theme-aware-modal-description"
+      // aria-labelledby="theme-aware-modal-title"
+      // aria-describedby="theme-aware-modal-description"
     >
       <ModalContent>
         <ModalHeader>
@@ -51,7 +51,7 @@ export default function ModalWindow({
             {modalContent.title}
           </Typography>
           <IconButton
-            aria-label="close"
+            // aria-label="close"
             onClick={onClose}
             sx={{
               color: theme.palette.grey[500],

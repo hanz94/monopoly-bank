@@ -18,12 +18,12 @@ function AppLayout() {
 
     return ( 
     <>
+        <BrowserRouter>
+
           <Header />
           
           <Paper elevation={0} sx={{ width: '100%', height: 'calc(100% - 64px)', overflow: 'auto', position: 'fixed', top: 64, display: 'grid', placeItems: 'center' }} square>
             <Box className="flex flex-col justify-center items-center" sx={{ margin: 'auto' }}>
-
-            <BrowserRouter>
 
               <ModalWindow open={isModalOpen} onClose={modalClose} modalContent={currentModalContent} />
 
@@ -36,10 +36,11 @@ function AppLayout() {
                 <Route path="/404" element={<NoPage />} />
                 <Route path="*" element={<NoPage />} />
               </Routes>
-            </BrowserRouter>
 
             </Box>
           </Paper>
+
+        </BrowserRouter>
     </>
         
     );

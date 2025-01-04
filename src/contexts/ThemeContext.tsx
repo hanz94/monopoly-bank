@@ -77,6 +77,14 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
           },
         },
       },
+      MuiAvatar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: mode === 'light' ? grey[400] : grey[300],
+            color: mode === 'light' ? grey[50] : grey[800],
+          }
+        }
+      }
     },
     breakpoints: {
       values: {

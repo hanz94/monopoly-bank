@@ -8,8 +8,6 @@ import { bounce, scaleOnHover } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
 import { useGameContext } from '../../contexts/GameContext';
-import { createGame } from '../../database/createGame';
-import { deleteGame } from '../../database/deleteGame';
 
 function MainPage() {
     const { mode } = useThemeContext();

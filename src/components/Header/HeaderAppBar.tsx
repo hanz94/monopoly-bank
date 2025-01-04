@@ -1,22 +1,75 @@
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import Popover from '@mui/material/Popover';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
 import modalContent from '../../utils/newModalContent';
 import { useDrawerContext } from '../../contexts/DrawerContext';
+import { useGameContext } from '../../contexts/GameContext';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function HeaderAppBar() {
  
   const { mode, setMode } = useThemeContext();
   const { modalOpen } = useModalContext();
   const { isDrawerOpen, toggleDrawer } = useDrawerContext();
+  const { updateOnlineStatus } = useGameContext();
+
+  const handleLogout = async (gameID: number, playerCode: string) => {
+    await updateOnlineStatus(gameID, playerCode, 'offline').then(() => {
+      handlePopoverClose();
+      navigate('/')
+    });
+  }
+
+  //Avatar green/red badge style
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      // badge color: green if player is in game and connected to server, otherwise red
+      backgroundColor: location.state?.playerCode && dbPlayersInfo[location.state.playerCode]?.status == 'online' ? '#44b700': '#f00',
+      boxShadow: `0 0 0 1px ${theme.palette.background.paper}`,
+      '&::after': {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        border: '1px solid white',
+        content: '""',
+      },
+    },
+  }));
+
+  //Avatar popover
+  const { gameInfo, dbPlayersInfo } = useGameContext();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handlePopoverClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? 'avatar-popover' : undefined;
+
 
     return (
       <>
@@ -27,17 +80,90 @@ function HeaderAppBar() {
                 size="large"
                 edge="start"
                 color="inherit"
-                aria-label="menu"
+                // aria-label="menu"
                 sx={{ mr: 2 }}
                 onClick={() => toggleDrawer()}
               >
                 {isDrawerOpen ? <ArrowBackIosNewIcon /> : <MenuIcon />}
               </IconButton>
+
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Monopoly Bank
               </Typography>
+
               <Button color="inherit" onClick={() => modalOpen(modalContent.changeNickname)}><SettingsIcon /></Button>
+
               <DarkModeSwitch checked={mode === 'dark'} onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')} size={24} sunColor='currentColor' moonColor='currentColor'/>
+
+
+              <Stack direction="row" spacing={2} sx={{ ml: 2 }} 
+              onClick={handlePopoverClick}>
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                variant="dot"
+              >
+                <Avatar sx={{ width: 32, height: 32, cursor: 'pointer' }}>
+                  {
+                    dbPlayersInfo[location.state?.playerCode]?.name && 
+                    dbPlayersInfo[location.state?.playerCode].name[0].toUpperCase() // get first letter of player name
+                  }
+
+                </Avatar>
+                </StyledBadge>
+              </Stack>
+
+
+              <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handlePopoverClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              sx={{
+                mt: 1
+              }}
+              >
+                <Typography sx={{ p: 2 }}>
+                  {
+                    location.state?.playerCode ? 
+                    //if player is in game
+                    (
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography>Zalogowano jako:</Typography>
+                        <Typography sx={{ fontWeight: 'bold' }}>{dbPlayersInfo[location.state?.playerCode]?.name}</Typography>
+                        <Typography>Identyfikator gry:</Typography>
+                        <Typography sx={{ fontWeight: 'bold' }}>{location.state?.gameID}</Typography>
+                        <Typography>Indywidualny kod gracza:</Typography>
+                        <Typography sx={{ fontWeight: 'bold' }}>{location.state?.playerCode}</Typography>
+
+                        <Typography>Aktualny stan konta:</Typography>
+                        <Typography sx={{ fontWeight: 'bold' }}>{dbPlayersInfo[location.state?.playerCode]?.balance} {gameInfo.currency}</Typography>
+
+                        <Typography sx={{mt: 0.8, color: dbPlayersInfo[location.state.playerCode]?.status == 'online' ? 'green' : 'red' }}>{dbPlayersInfo[location.state.playerCode]?.status.toUpperCase()}</Typography>
+
+                        <Button 
+                            variant="outlined" 
+                            sx={{ p: 1.2, mt: 0.8 }} 
+                            onClick={() => handleLogout(gameInfo.gameID, location.state.playerCode)}
+                        >
+                            Wyloguj się
+                        </Button>
+
+                      </Box>
+                    ) : 
+                    //if player is not in game
+                    (
+                      'Nie zalogowany'
+                    )
+                  }
+                  
+                </Typography>
+              </Popover>
+
             </Toolbar>
           </AppBar>
       </>

@@ -1,12 +1,12 @@
 import { Button, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { scaleOnHover } from "../../utils/animations";
 import PlayerCard from "../PlayerCard";
 import { db } from "../../database/firebaseConfig";
-import { ref, onValue, set, off, onDisconnect } from "firebase/database";
+import { ref, onValue, off, onDisconnect } from "firebase/database";
 import { deleteGame } from "../../database/deleteGame";
 
 type DbPlayersInfo = {
@@ -15,17 +15,11 @@ type DbPlayersInfo = {
         balance: number,
         status: string
     }
-}
-
-const updateOnlineStatus = async (gameID: number, playerCode: string, status: string) => {
-    await set(ref(db, `/games/game-${gameID}/players/${playerCode}/status`), status);
-}
+  }
 
 function Bank() {
 
-    const { gameInfo, setGameInfo, setGameSessionActive } = useGameContext();
-
-    const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
+    const { gameInfo, setGameInfo, setGameSessionActive, dbPlayersInfo, setDbPlayersInfo, updateOnlineStatus } = useGameContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -67,7 +61,6 @@ function Bank() {
                 updateOnlineStatus(location.state.gameID, location.state.playerCode, "offline");
             }
         });
-    
         // Clean up listener on unmount
         return () => off(connectedRef);
     }, []);
@@ -111,7 +104,7 @@ function Bank() {
     return ( 
         <div>
 
-        {dbPlayersInfo[location.state.playerCode] ? (
+        {/* {dbPlayersInfo[location.state.playerCode] ? (
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>
                 Zalogowano jako: {dbPlayersInfo[location.state.playerCode]?.name} ({location.state.playerCode})<br />
                 Stan konta: <b>{dbPlayersInfo[location.state.playerCode]?.balance} {gameInfo.currency}</b><br />
@@ -122,9 +115,10 @@ function Bank() {
             </Typography>
         ) : (
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Ładowanie danych...</Typography>
-        )}
+        )} */}
 
-            <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Witamy w Banku! Oto niezbędne informacje:</Typography>
+            <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Witamy na stronie Banku!</Typography>
+            <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Na bieżąco sprawdzaj i zarządzaj kontami innych graczy.</Typography>
 
             {/* <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Cross start bonus (serwer): {gameInfo.crossStartBonus}</Typography> */}
 

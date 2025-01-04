@@ -8,13 +8,12 @@ import { motion } from 'framer-motion';
 import { bounce, scaleOnHover, pulse } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { create } from '@mui/material/styles/createTransitions';
 import { createGame } from '../../database/createGame';
 
 function New() {
 
     const { modalOpen } = useModalContext();
-    const { setGameInfo, setGameSessionActive, newPlayerNames, setNewPlayerNames, newPlayerNamesDefined, setNewPlayerNamesDefined } = useGameContext();
+    const { newPlayerNames, setNewPlayerNames, newPlayerNamesDefined, setNewPlayerNamesDefined } = useGameContext();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -115,11 +114,12 @@ function New() {
                     </Button>
                 </Grid>
 
-                <Grid size={12} sx={{display: 'flex', justifyContent: 'center'}}>
+                <Grid size={12} sx={{display: 'flex', justifyContent: 'center', mt: 0.4, mb: 1}}>
                     <Button 
                         variant="contained" 
                         component={motion.button} 
-                        {...scaleOnHover} 
+                        {...scaleOnHover}
+                        {...(newPlayerNamesDefined && pulse)}
                         sx={{ p: 1.4 }} 
                         onClick={async () => {
                             // setGameInfo({
