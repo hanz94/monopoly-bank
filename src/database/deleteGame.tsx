@@ -18,6 +18,7 @@ export const deleteGame = async (gameId: number) => {
     const playerCodes = Object.keys(playerCodesObj);
     for (const playerCode of playerCodes) {
         await remove(ref(db, `access/${playerCode}`));
+        onDisconnect(ref(db, `games/game-${gameId}/players/${playerCode}/status`)).cancel();
     }
 
     onDisconnect(ref(db, `games/game-${gameId}`)).cancel();

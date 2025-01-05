@@ -8,7 +8,7 @@ import { scaleOnHoverSmall } from "../../utils/animations";
 
 function DefineNewPlayers() {
 
-    const { newPlayerNames, setNewPlayerNames, setNewPlayerNamesDefined } = useGameContext();
+    const { newPlayerNames, setNewPlayerNames, newPlayerNamesDefined, setNewPlayerNamesDefined } = useGameContext();
     const { modalClose } = useModalContext();
     const location = useLocation();
 
@@ -75,6 +75,7 @@ function DefineNewPlayers() {
                             inputProps={{
                                 maxLength: 20,
                             }}
+                            {...newPlayerNamesDefined && { value: newPlayerNames[index] }}
                             error={!!errors[index]}
                             helperText={errors[index]}
                         />

@@ -119,10 +119,10 @@ function NewGame() {
                     </Grid>
                     <Grid size={12}>
                         <FormControl fullWidth required error={!!errors.numberOfPlayers}>
-                            <InputLabel id="label-playercount">Ilość graczy (2-6)</InputLabel>
+                            <InputLabel id="label-playercount">Liczba graczy (2-6)</InputLabel>
                             <Select
                                 labelId="label-playercount"
-                                label="Ilość graczy (2-6)"
+                                label="Liczba graczy (2-6)"
                                 value={numberOfPlayers}
                                 onChange={(e) => setNumberOfPlayers(Number(e.target.value))}
                             >

@@ -15,7 +15,7 @@ import Popover from '@mui/material/Popover';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
-import modalContent from '../../utils/newModalContent';
+import newModalContent from '../../utils/newModalContent';
 import { useDrawerContext } from '../../contexts/DrawerContext';
 import { useGameContext } from '../../contexts/GameContext';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
@@ -91,9 +91,10 @@ function HeaderAppBar() {
                 Monopoly Bank
               </Typography>
 
-              <Button color="inherit" onClick={() => modalOpen(modalContent.changeNickname)}><SettingsIcon /></Button>
 
-              <DarkModeSwitch checked={mode === 'dark'} onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')} size={24} sunColor='currentColor' moonColor='currentColor'/>
+              <Button color="inherit" onClick={() => modalOpen(newModalContent.changeNickname)}><SettingsIcon /></Button>
+
+              <DarkModeSwitch checked={mode === 'dark'} onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')} size={24} sunColor='currentColor' moonColor='currentColor' />
 
 
               <Stack direction="row" spacing={2} sx={{ ml: 2 }} 
@@ -112,7 +113,6 @@ function HeaderAppBar() {
                 </Avatar>
                 </StyledBadge>
               </Stack>
-
 
               <Popover
               id={id}
@@ -157,7 +157,18 @@ function HeaderAppBar() {
                     ) : 
                     //if player is not in game
                     (
-                      'Nie zalogowany'
+                      <>
+                        <Typography sx={{ textAlign: 'center' }}>Niezalogowany</Typography>
+
+                        <Button 
+                          variant="outlined" 
+                          sx={{ p: 1.2, mt: 0.8 }} 
+                          onClick={() => modalOpen(newModalContent.joinGame)}
+                        >
+                          Dołącz do gry
+                        </Button>
+                      </>
+
                     )
                   }
                   

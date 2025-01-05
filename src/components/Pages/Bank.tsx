@@ -55,7 +55,9 @@ function Bank() {
     
                 // Use onDisconnect to set status to "offline" if disconnected
                 const playerStatusRef = ref(db, `/games/game-${location.state.gameID}/players/${location.state.playerCode}/status`);
+
                 onDisconnect(playerStatusRef).set("offline");
+
             } else {
                 // Optionally handle local offline status
                 updateOnlineStatus(location.state.gameID, location.state.playerCode, "offline");
@@ -80,7 +82,15 @@ function Bank() {
                 };
             }
 
-            setDbPlayersInfo(updatedPlayersInfo);
+            //sort players by name
+            // Step 1: Convert the object into an array of entries
+            const entries = Object.entries(updatedPlayersInfo);
+            // Step 2: Sort the array by the "name" property
+            entries.sort(([, a], [, b]) => a.name.localeCompare(b.name));
+            // Step 3: Convert the sorted array back into an object
+            const sortedPlayersInfo = Object.fromEntries(entries);
+
+            setDbPlayersInfo(sortedPlayersInfo);
 
             setGameInfo({
                 ...gameInfo,

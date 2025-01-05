@@ -9,6 +9,9 @@ type NewGameOptions = {
     playerNames: string[];
 }
 
+//get random integer (both min and max included)
+const getRandomInteger = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
+
 const checkIdExists = (id: number): Promise<boolean> => {
     return get(child(ref(db), `/ids/${id}`))
         .then((snapshot) => {
@@ -46,14 +49,14 @@ const createRandomPlayerCode = (length = 6) => {
 export const createGame = async (newGameOptions: NewGameOptions) => {
         
     // Create new random game id
-        let newId = Math.floor(Math.random() * 999999) + 100000;
+        let newId = getRandomInteger(100000, 999999);
 
     //Make sure id doesn't already exist in database
         let idExists;
         idExists = await checkIdExists(newId);
         console.log(idExists);
         while (idExists) {
-            newId = Math.floor(Math.random() * 999999) + 100000;
+            newId = getRandomInteger(100000, 999999);
             idExists = await checkIdExists(newId);
             console.log(idExists);
         }
