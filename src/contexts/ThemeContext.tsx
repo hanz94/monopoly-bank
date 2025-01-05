@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Badge from '@mui/material/Badge';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useLocalStorageState } from '@toolpad/core';
 import { grey } from '@mui/material/colors';
 import { lighten } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 type ModeType = "light" | "dark" | null;
 
@@ -16,6 +18,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
+
   const prefersDarkMode = useMediaQuery<boolean>('(prefers-color-scheme: dark)');
   const [mode, setMode] = useLocalStorageState<ModeType>('selectedMode', prefersDarkMode ? 'dark' : 'light');
 
@@ -119,4 +122,21 @@ const useThemeContext = () => {
   return context;
 };
 
-export { ThemeContextProvider, useThemeContext };
+//Avatar green/red badge style
+const StyledBadge = styled(Badge)<{ isOnline: boolean }>(({ theme, isOnline }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: isOnline ? '#44b700' : '#f00', // Green for online, red for offline
+    boxShadow: `0 0 0 1px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      border: '1px solid white',
+      content: '""',
+    },
+  },
+}));
+export { ThemeContextProvider, useThemeContext, StyledBadge };

@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Badge from '@mui/material/Badge';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Avatar from '@mui/material/Avatar';
+import { StyledBadge } from '../../contexts/ThemeContext';
 import Stack from '@mui/material/Stack';
 import Popover from '@mui/material/Popover';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -34,25 +33,6 @@ function HeaderAppBar() {
       navigate('/')
     });
   }
-
-  //Avatar green/red badge style
-  const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-      // badge color: green if player is in game and connected to server, otherwise red
-      backgroundColor: location.state?.playerCode && dbPlayersInfo[location.state.playerCode]?.status == 'online' ? '#44b700': '#f00',
-      boxShadow: `0 0 0 1px ${theme.palette.background.paper}`,
-      '&::after': {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        borderRadius: '50%',
-        border: '1px solid white',
-        content: '""',
-      },
-    },
-  }));
 
   //Avatar popover
   const { gameInfo, dbPlayersInfo } = useGameContext();
@@ -103,6 +83,7 @@ function HeaderAppBar() {
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 variant="dot"
+                isOnline={location.state?.playerCode && dbPlayersInfo[location.state?.playerCode]?.status == 'online'}
               >
                 <Avatar sx={{ width: 32, height: 32, cursor: 'pointer' }}>
                   {

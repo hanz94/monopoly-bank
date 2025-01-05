@@ -1,4 +1,9 @@
-import { Button, Typography } from "@mui/material";
+import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import { StyledBadge } from "../../contexts/ThemeContext";
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useEffect } from "react";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -83,11 +88,11 @@ function Bank() {
             }
 
             //sort players by name
-            // Step 1: Convert the object into an array of entries
+            // Convert the object into an array of entries
             const entries = Object.entries(updatedPlayersInfo);
-            // Step 2: Sort the array by the "name" property
+            // Sort the array by the "name" property
             entries.sort(([, a], [, b]) => a.name.localeCompare(b.name));
-            // Step 3: Convert the sorted array back into an object
+            // Convert the sorted array back into an object
             const sortedPlayersInfo = Object.fromEntries(entries);
 
             setDbPlayersInfo(sortedPlayersInfo);
@@ -130,21 +135,43 @@ function Bank() {
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Witamy na stronie Banku!</Typography>
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Na bieżąco sprawdzaj i zarządzaj kontami innych graczy.</Typography>
 
-            {/* <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Cross start bonus (serwer): {gameInfo.crossStartBonus}</Typography> */}
-
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>
             {Object.keys(dbPlayersInfo).map((playerCode, index) => {
             return (
-                <div key={index}>
-                    <PlayerCard
-                        currency={gameInfo.currency}
-                        gameID={gameInfo.gameID}
-                        playerCode={playerCode}
-                        playerName={dbPlayersInfo[playerCode].name}
-                        playerBalance={dbPlayersInfo[playerCode].balance}
-                        playerStatus={dbPlayersInfo[playerCode].status}
-                    />
-                </div>
+                <Box key={index} sx={{ my: 3.2 }}>
+                    <Accordion>
+                        <AccordionSummary
+                        expandIcon={<ArrowDownwardIcon />}
+                        >
+                            <Stack direction="row" spacing={2} sx={{ mr: 1, my: 'auto' }}>
+                                <StyledBadge
+                                overlap="circular"
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                variant="dot"
+                                isOnline={dbPlayersInfo[playerCode].status == 'online'}
+                            >
+                                    <Avatar sx={{ width: 32, height: 32, cursor: 'pointer'}}>
+                                        {dbPlayersInfo[playerCode].name.charAt(0).toUpperCase()}
+                                    </Avatar>
+                                </StyledBadge>
+                            </Stack>
+                            <Box>
+                                <Typography sx={{ my: 'auto', ml: 0.5, textAlign: 'left', fontSize: 17 }}>{dbPlayersInfo[playerCode].name} {dbPlayersInfo[playerCode].name == dbPlayersInfo[location.state?.playerCode]?.name && playerCode == location.state?.playerCode  && ' (Ty)'}</Typography>
+                                <Typography sx={{ my: 'auto', ml: 0.95, textAlign: 'left', fontSize: 12, fontWeight: 'bold' }}>{dbPlayersInfo[playerCode].balance} {gameInfo.currency}</Typography>
+                            </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <PlayerCard
+                            // currency={gameInfo.currency}
+                            gameID={gameInfo.gameID}
+                            playerCode={playerCode}
+                            // playerName={dbPlayersInfo[playerCode].name}
+                            playerBalance={dbPlayersInfo[playerCode].balance}
+                            playerStatus={dbPlayersInfo[playerCode].status}
+                        /> 
+                        </AccordionDetails>
+                    </Accordion>
+                </Box>
                 );
             })}
             </Typography>
