@@ -156,10 +156,10 @@ function Bank() {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <PlayerCard
-                                    // currency={gameInfo.currency}
+                                    currency={gameInfo.currency}
                                     gameID={gameInfo.gameID}
                                     playerCode={playerCode}
-                                    // playerName={dbPlayersInfo[playerCode].name}
+                                    playerName={dbPlayersInfo[playerCode].name}
                                     playerBalance={dbPlayersInfo[playerCode].balance}
                                     playerStatus={dbPlayersInfo[playerCode].status}
                                 /> 

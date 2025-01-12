@@ -1,16 +1,10 @@
 import { Typography, Button, Box } from "@mui/material";
-import { db } from "../database/firebaseConfig";
-import { ref, set } from "firebase/database";
+import { useModalContext } from "../contexts/ModalContext";
+import ChangePlayerBalance from "./ModalWindow/ChangePlayerBalance";
 
-function PlayerCard({gameID, playerCode, playerBalance, playerStatus }: { gameID: number | string, playerCode: string, playerBalance: number | string, playerStatus: string }) {
+function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, playerStatus }: { currency: string, gameID: number | string, playerName: string, playerCode: string, playerBalance: number | string, playerStatus: string }) {
 
-    const decrementBalance = () => {
-        set(ref(db, `games/game-${gameID}/players/${playerCode}/balance`), Number(playerBalance) - 1);
-    };
-    
-    const incrementBalance = () => {
-        set(ref(db, `games/game-${gameID}/players/${playerCode}/balance`), Number(playerBalance) + 1);
-    };
+    const { modalOpen } = useModalContext();
 
     return ( 
         <>
@@ -21,13 +15,41 @@ function PlayerCard({gameID, playerCode, playerBalance, playerStatus }: { gameID
                 <Typography sx ={{ my: 0.6 }} color={playerStatus === 'online' ? 'success' : 'error'}>{playerStatus.toLocaleUpperCase()}</Typography>
                 </div>
             <Box sx={{ mb: 0.7 }}>
-                <Button sx={{display: 'inline', mr: 1}} onClick={decrementBalance}>
-                    Zmniejsz o 1
+                <Button 
+                sx={{display: 'inline', mr: 1}} 
+                onClick={() =>
+                    modalOpen({
+                        title: 'Zmniejsz stan konta',
+                        content: <ChangePlayerBalance type="decrease" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                    })
+                }
+                >
+                    Zmniejsz {currency}
                 </Button>
-                <Button sx={{display: 'inline', mr: 1}} onClick={incrementBalance}>
-                    Powiększ o 1
+                <Button 
+                sx={{display: 'inline', mr: 1}} 
+                onClick={() =>
+                    modalOpen({
+                        title: 'Zwiększ stan konta',
+                        content: <ChangePlayerBalance type="increase" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                    })
+                }
+                >
+                    Zwiększ {currency}
                 </Button>
             </Box>
+            <Button
+            sx={{ display: 'inline', mr: 1 }}
+            onClick={() =>
+                modalOpen({
+                    title: 'Zmień stan konta',
+                    content: <ChangePlayerBalance type="change" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                })
+            }
+        >
+            Zmień stan konta
+        </Button>
+
         </>
     );
 }
