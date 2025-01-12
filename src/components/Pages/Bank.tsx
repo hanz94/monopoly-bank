@@ -6,6 +6,8 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useEffect } from "react";
+import { useModalContext } from "../../contexts/ModalContext";
+import newModalContent from "../../utils/newModalContent";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -13,7 +15,6 @@ import { scaleOnHover } from "../../utils/animations";
 import PlayerCard from "../PlayerCard";
 import { db } from "../../database/firebaseConfig";
 import { ref, onValue, off, onDisconnect } from "firebase/database";
-import { deleteGame } from "../../database/deleteGame";
 
 type DbPlayersInfo = {
     [key: string]: {
@@ -24,6 +25,8 @@ type DbPlayersInfo = {
   }
 
 function Bank() {
+
+    const { modalOpen } = useModalContext();
 
     const { gameInfo, setGameInfo, setGameSessionActive, dbPlayersInfo, setDbPlayersInfo, updateOnlineStatus } = useGameContext();
 
@@ -173,7 +176,7 @@ function Bank() {
                         component={motion.button} 
                         {...scaleOnHover} 
                         sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                        onClick={async () => await deleteGame(location.state.gameID).then(() => navigate('/'))}
+                        onClick={() => modalOpen(newModalContent.deleteGameConfirmation)}
                     >
                         Usuń sesję gry (ID: {location.state.gameID})
                     </Button>

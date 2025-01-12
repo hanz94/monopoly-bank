@@ -3,6 +3,7 @@ import NewGame from "../components/ModalWindow/NewGame";
 import DefineNewPlayers from "../components/ModalWindow/DefineNewPlayers";
 import JoinGame from "../components/ModalWindow/JoinGame";
 import Instruction from "../components/ModalWindow/Instruction";
+import DeleteGameConfirmation from "../components/ModalWindow/DeleteGameConfirmation";
 
     const newModalContent = {
             changeNickname: {
@@ -24,6 +25,10 @@ import Instruction from "../components/ModalWindow/Instruction";
             instruction: {
                 title: "Jak używać Monopoly Bank?",
                 content: <Instruction />
+            },
+            deleteGameConfirmation: {
+                title: "Usuń sesję gry",
+                content: <DeleteGameConfirmation />
             },
     };
 
