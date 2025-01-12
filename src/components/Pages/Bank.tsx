@@ -1,4 +1,5 @@
 import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 import { StyledBadge } from "../../contexts/ThemeContext";
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -117,63 +118,54 @@ function Bank() {
     // }, [gameSessionActive, gameInfo, navigate]);
 
     return ( 
-        <div>
-
-        {/* {dbPlayersInfo[location.state.playerCode] ? (
-            <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>
-                Zalogowano jako: {dbPlayersInfo[location.state.playerCode]?.name} ({location.state.playerCode})<br />
-                Stan konta: <b>{dbPlayersInfo[location.state.playerCode]?.balance} {gameInfo.currency}</b><br />
-                Twój status: 
-                <span style={{ color: dbPlayersInfo[location.state.playerCode]?.status == 'online' ? 'green' : 'red' }}>&nbsp;
-                    {dbPlayersInfo[location.state.playerCode]?.status.toUpperCase()}
-                </span>
-            </Typography>
-        ) : (
-            <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Ładowanie danych...</Typography>
-        )} */}
+        <div style={{ width: '90%', height: '100%' }}>
 
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Witamy na stronie Banku!</Typography>
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>Na bieżąco sprawdzaj i zarządzaj kontami innych graczy.</Typography>
 
             <Typography sx={{ mt: 2, mb: 1, textAlign: 'center' }}>
-            {Object.keys(dbPlayersInfo).map((playerCode, index) => {
-            return (
-                <Box key={index} sx={{ my: 3.2 }}>
-                    <Accordion>
-                        <AccordionSummary
-                        expandIcon={<ArrowDownwardIcon />}
-                        >
-                            <Stack direction="row" spacing={2} sx={{ mr: 1, my: 'auto' }}>
-                                <StyledBadge
-                                overlap="circular"
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                variant="dot"
-                                isOnline={dbPlayersInfo[playerCode].status == 'online'}
-                            >
-                                    <Avatar sx={{ width: 32, height: 32, cursor: 'pointer'}}>
-                                        {dbPlayersInfo[playerCode].name.charAt(0).toUpperCase()}
-                                    </Avatar>
-                                </StyledBadge>
-                            </Stack>
-                            <Box>
-                                <Typography sx={{ my: 'auto', ml: 0.5, textAlign: 'left', fontSize: 17 }}>{dbPlayersInfo[playerCode].name} {dbPlayersInfo[playerCode].name == dbPlayersInfo[location.state?.playerCode]?.name && playerCode == location.state?.playerCode  && ' (Ty)'}</Typography>
-                                <Typography sx={{ my: 'auto', ml: 0.95, textAlign: 'left', fontSize: 12, fontWeight: 'bold' }}>{dbPlayersInfo[playerCode].balance} {gameInfo.currency}</Typography>
-                            </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <PlayerCard
-                            // currency={gameInfo.currency}
-                            gameID={gameInfo.gameID}
-                            playerCode={playerCode}
-                            // playerName={dbPlayersInfo[playerCode].name}
-                            playerBalance={dbPlayersInfo[playerCode].balance}
-                            playerStatus={dbPlayersInfo[playerCode].status}
-                        /> 
-                        </AccordionDetails>
-                    </Accordion>
-                </Box>
-                );
-            })}
+
+                {/* Grid display - players */}
+                <Grid container spacing={2}>
+                    {Object.keys(dbPlayersInfo).map((playerCode, index) => {
+                    return (
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Accordion key={index} sx={{ my: 1.4 }}>
+                                <AccordionSummary
+                                expandIcon={<ArrowDownwardIcon />}
+                                >
+                                    <Stack direction="row" spacing={2} sx={{ mr: 1, my: 'auto' }}>
+                                        <StyledBadge
+                                        overlap="circular"
+                                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                        variant="dot"
+                                        isOnline={dbPlayersInfo[playerCode].status == 'online'}
+                                    >
+                                            <Avatar sx={{ width: 32, height: 32, cursor: 'pointer'}}>
+                                                {dbPlayersInfo[playerCode].name.charAt(0).toUpperCase()}
+                                            </Avatar>
+                                        </StyledBadge>
+                                    </Stack>
+                                    <Box>
+                                        <Typography sx={{ my: 'auto', ml: 0.5, textAlign: 'left', fontSize: 17 }}>{dbPlayersInfo[playerCode].name} {dbPlayersInfo[playerCode].name == dbPlayersInfo[location.state?.playerCode]?.name && playerCode == location.state?.playerCode  && ' (Ty)'}</Typography>
+                                        <Typography sx={{ my: 'auto', ml: 0.95, textAlign: 'left', fontSize: 12, fontWeight: 'bold' }}>{dbPlayersInfo[playerCode].balance} {gameInfo.currency}</Typography>
+                                    </Box>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <PlayerCard
+                                    // currency={gameInfo.currency}
+                                    gameID={gameInfo.gameID}
+                                    playerCode={playerCode}
+                                    // playerName={dbPlayersInfo[playerCode].name}
+                                    playerBalance={dbPlayersInfo[playerCode].balance}
+                                    playerStatus={dbPlayersInfo[playerCode].status}
+                                /> 
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                        );
+                    })}
+                </Grid>
             </Typography>
 
             <Button 
