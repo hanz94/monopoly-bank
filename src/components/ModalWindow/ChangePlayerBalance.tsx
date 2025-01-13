@@ -89,9 +89,17 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                 value={newPlayerBalance !== null ? newPlayerBalance : ""}
                 onChange={(e) => {
                     const value = e.target.value;
-
+            
+                    // Validate input
                     if (validateNumber(value)) {
-                        setNewPlayerBalance(Number(value));
+                        let newValue = Number(value);
+            
+                        // Additional validation for decrease type - limit to current balance - to prevent negative balance
+                        if (type === "decrease" && newValue > Number(playerBalance)) {
+                            newValue = Number(playerBalance);
+                        }
+            
+                        setNewPlayerBalance(newValue);
                         setIsValid(true);
                     } else {
                         setNewPlayerBalance(null);
