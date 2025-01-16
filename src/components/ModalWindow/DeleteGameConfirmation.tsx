@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { deleteGame } from "../../database/deleteGame";
 import { useModalContext } from "../../contexts/ModalContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 function DeleteGameConfirmation() {
 
@@ -19,17 +20,28 @@ function DeleteGameConfirmation() {
 
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button 
-                sx={{ mt: 2, width: '50%' }}
+                variant="outlined"
+                startIcon={<DeleteOutlineIcon />}
+                sx={{
+                    mt: 2,
+                    width: '46%',
+                    textTransform: 'none', // Keep text casing as is
+                  }}
                 onClick={async () => await deleteGame(location.state.gameID).then(() =>  {
                     navigate('/')
                     modalClose()
                 })}
                 >
-                    Usuń sesję
+                    Usuń grę
                 </Button>
 
                 <Button 
-                sx={{ mt: 2, width: '50%' }}
+                variant="outlined"
+                sx={{
+                    mt: 2,
+                    width: '46%',
+                    textTransform: 'none', // Keep text casing as is
+                  }}
                 onClick={modalClose}
                 >
                     Anuluj

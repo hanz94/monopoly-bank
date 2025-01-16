@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useModalContext } from "../../contexts/ModalContext";
+import DoneIcon from '@mui/icons-material/Done';
 import { ref, set, get } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
 
@@ -149,7 +150,14 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <Button
-                sx={{ mt: 2, width: "50%" }}
+                variant="outlined"
+                sx={{
+                    mt: 2,
+                    width: '46%',
+                    textTransform: 'none', // Keep text casing as is
+
+                  }}
+                startIcon={<DoneIcon />}
                 onClick={() => changeBalance(newPlayerBalance as number)}
                 disabled={!isValid}
             >
@@ -157,7 +165,12 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             </Button>
 
             <Button
-                sx={{ mt: 2, width: "50%" }}
+                variant="outlined"
+                sx={{
+                    mt: 2,
+                    width: '46%',
+                    textTransform: 'none', // Keep text casing as is
+                  }}
                 onClick={modalClose}
             >
                 Anuluj

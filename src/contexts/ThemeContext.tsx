@@ -33,6 +33,8 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
     inputDark: function() {
       return lighten(this.mainDark, 0.48);
     },
+    outlinedButtonLight: lighten('#0000b3', 0.1),
+    outlinedButtonDark: lighten('#0039e6', 0.5),
   }
 
   const appTheme = createTheme({
@@ -87,7 +89,21 @@ const ThemeContextProvider = ({ children }: { children: React.ReactNode }) => {
             color: mode === 'light' ? grey[50] : grey[800],
           }
         }
-      }
+      },
+      MuiButton: {
+        styleOverrides: {
+          outlined: {
+            borderColor: mode === 'light' ? themeColor.outlinedButtonLight : themeColor.outlinedButtonDark,
+            color: mode === 'light' ? themeColor.outlinedButtonLight : themeColor.outlinedButtonDark,
+            '&:hover': {
+              borderColor: mode === 'light' ? themeColor.outlinedButtonLight : themeColor.outlinedButtonDark,
+              ...(mode === 'dark' && {
+                backgroundColor: '#444', // Apply only in dark mode
+              }),
+            },
+          },
+        },
+      },
     },
     breakpoints: {
       values: {

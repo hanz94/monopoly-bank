@@ -1,6 +1,7 @@
 import { Typography, Button, Box } from "@mui/material";
 import { useModalContext } from "../contexts/ModalContext";
 import ChangePlayerBalance from "./ModalWindow/ChangePlayerBalance";
+import ShiningText from "shiny-text";
 
 function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, playerStatus }: { currency: string, gameID: number | string, playerName: string, playerCode: string, playerBalance: number | string, playerStatus: string }) {
 
@@ -8,14 +9,25 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
 
     return ( 
         <>
-            <div> 
+            <Box> 
             <Typography>Identyfikator gry: <b>{gameID}</b> </Typography>
             <Typography>Indywidualny kod gracza: <b>{playerCode}</b> </Typography>
 
-                <Typography sx ={{ my: 0.6 }} color={playerStatus === 'online' ? 'success' : 'error'}>{playerStatus.toLocaleUpperCase()}</Typography>
-                </div>
+                {/* <Typography sx ={{ my: 0.6 }} color={playerStatus === 'online' ? 'success' : 'error'}>{playerStatus.toLocaleUpperCase()}</Typography> */}
+                <Box sx={{ mt: 0.5, mb: 0.7 }}>
+                <ShiningText 
+                duration="5s" 
+                textColor={playerStatus === 'online' ? '#66bb6a' : 'red'}
+                >
+                {playerStatus.toLocaleUpperCase()}
+                </ShiningText>
+                </Box>
+
+            </Box>
+
             <Box sx={{ mb: 0.7 }}>
                 <Button 
+                variant="outlined"
                 sx={{display: 'inline', mr: 1}} 
                 onClick={() =>
                     modalOpen({
@@ -27,6 +39,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                     Zmniejsz {currency}
                 </Button>
                 <Button 
+                variant="outlined"
                 sx={{display: 'inline', mr: 1}} 
                 onClick={() =>
                     modalOpen({
@@ -39,6 +52,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                 </Button>
             </Box>
             <Button
+            variant="outlined"
             sx={{ display: 'inline', mr: 1 }}
             onClick={() =>
                 modalOpen({

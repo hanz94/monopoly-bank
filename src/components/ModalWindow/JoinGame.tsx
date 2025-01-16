@@ -118,10 +118,11 @@ function JoinGame() {
                             value={playerGameCode}
                             onChange={handleInputPlayerCodeChange}
                             inputProps={{
-                                maxLength: 6, // Maximum length of 6 characters
+                                maxLength: 6, 
                                 style: { textTransform: "uppercase" },
+                                autoCapitalize: "characters", // Make the keyboard default to uppercase on mobile
                             }}
-                            error={!!errorPlayerGameCode} // Show error styling if error exists
+                            error={!!errorPlayerGameCode} 
                         />
                         {errorPlayerGameCode && <Typography sx={{fontSize: errorFontSize}} color="error">{errorPlayerGameCode}</Typography>}
                     </Grid>
