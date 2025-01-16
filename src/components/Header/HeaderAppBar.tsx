@@ -124,8 +124,6 @@ function HeaderAppBar() {
                         <Typography>Aktualny stan konta:</Typography>
                         <Typography sx={{ fontWeight: 'bold' }}>{dbPlayersInfo[location.state?.playerCode]?.balance} {gameInfo.currency}</Typography>
 
-                        {/* color={playerStatus === 'online' ? 'success' : 'error'} */}
-
                         <Typography sx={{mt: 0.8 }} color={dbPlayersInfo[location.state.playerCode]?.status === 'online' ? 'success' : 'error'}>{dbPlayersInfo[location.state.playerCode]?.status.toUpperCase()}</Typography>
 
                         <Button 

@@ -172,14 +172,24 @@ function Bank() {
             </Typography>
 
             <Button 
-                        variant="contained" 
-                        component={motion.button} 
-                        {...scaleOnHover} 
-                        sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                        onClick={() => modalOpen(newModalContent.deleteGameConfirmation)}
-                    >
-                        Usuń sesję gry (ID: {location.state.gameID})
-                    </Button>
+                variant="contained" 
+                component={motion.button} 
+                {...scaleOnHover} 
+                sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
+                onClick={() => modalOpen(newModalContent.deleteGameConfirmation)}
+            >
+                Usuń sesję gry (ID: {location.state.gameID})
+            </Button>
+
+            <Button 
+                variant="contained" 
+                component={motion.button} 
+                {...scaleOnHover} 
+                sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
+                onClick={() => navigate('/player', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}
+            >
+                Panel gracza ({dbPlayersInfo[location.state.playerCode]?.name})
+            </Button>
            
         </div>
     );

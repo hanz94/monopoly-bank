@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from './Pages/MainPage';
 import NoPage from './Pages/NoPage';
 import Join from './Pages/Join';
+import Player from './Pages/Player';
 import New from './Pages/New';
 import Bank from './Pages/Bank';
 import SessionExpired from './Pages/SessionExpired';
@@ -31,6 +32,7 @@ function AppLayout() {
                 <Route path="/" element={<MainPage />} />
                 <Route path="/new" element={<New />} />
                 <Route path="/join" element={<Join />} />
+                <Route path="/player" element={<Player />} />
                 <Route path="/bank" element={<Bank />} />
                 <Route path="/session-expired" element={<SessionExpired />} />
                 <Route path="/404" element={<NoPage />} />
