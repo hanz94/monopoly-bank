@@ -90,19 +90,19 @@ function Bank() {
                 component={motion.button} 
                 {...scaleOnHover} 
                 sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                onClick={() => modalOpen(newModalContent.deleteGameConfirmation)}
+                onClick={() => navigate('/player', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}
             >
-                Usuń sesję gry (ID: {location.state.gameID})
+                Panel gracza ({dbPlayersInfo[location.state.playerCode]?.name})
             </Button>
 
             <Button 
                 variant="contained" 
                 component={motion.button} 
                 {...scaleOnHover} 
-                sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                onClick={() => navigate('/player', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}
+                sx={{ p: 1.4, margin: 'auto', display: 'block', my: 2 }} 
+                onClick={() => modalOpen(newModalContent.deleteGameConfirmation)}
             >
-                Panel gracza ({dbPlayersInfo[location.state.playerCode]?.name})
+                Usuń sesję gry (ID: {location.state.gameID})
             </Button>
            
         </div>

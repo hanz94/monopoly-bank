@@ -1,8 +1,9 @@
 import { Box, Button, Typography } from '@mui/material';
+import CircularProgress from "@mui/material/CircularProgress";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import { scaleOnHover } from "../../utils/animations";
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeInDown, scaleOnHover } from "../../utils/animations";
 import GameSessionHandler from '../../database/GameSessionHandler';
 
 function Player() {
@@ -11,6 +12,8 @@ function Player() {
     
     const navigate = useNavigate();
     const location = useLocation();
+
+    const playerBalance = dbPlayersInfo[location.state.playerCode]?.balance;
     
     return ( 
         <>
@@ -22,7 +25,36 @@ function Player() {
             {/* Your account balance */}
             <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Typography variant="h6">Twoje konto:</Typography>
-                <Typography variant="h4">{dbPlayersInfo[location.state.playerCode]?.balance} {gameInfo.currency}</Typography>
+                <AnimatePresence mode="wait">
+                    {playerBalance !== undefined && playerBalance !== null ? (
+                        <Typography
+                        variant="h4"
+                        component={motion.div}
+                        key={playerBalance} // Key based on balance
+                        {...scaleOnHover}
+                        {...fadeInDown} // Use fade-in-down animation
+                        >
+                        {playerBalance} {gameInfo.currency}
+                        </Typography>
+                    ) : (
+                        <CircularProgress /> // Show loading icon if balance is not available
+                    )}
+                </AnimatePresence>
+            </Box>
+
+            {/* Other players list */}
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Typography variant="h6">Inni gracze:</Typography>
+                {Object.keys(dbPlayersInfo).map((playerCode, index) => {
+                    if (playerCode === location.state.playerCode) return null;
+                    return <Box key={index} sx={{ mt: 1 }}>
+                        <Typography key={index}>{dbPlayersInfo[playerCode].name}</Typography>
+                        <Typography>Stan konta: 
+                             <AnimatePresence mode="wait"><motion.span key={dbPlayersInfo[playerCode].balance} {...scaleOnHover} {...fadeInDown} style={{ display: 'inline-block', marginLeft: '5px' }}> {dbPlayersInfo[playerCode].balance} {gameInfo.currency}</motion.span></AnimatePresence>
+                        </Typography>
+                        <Typography>Status: {dbPlayersInfo[playerCode].status}</Typography>
+                    </Box>;
+                })}
             </Box>
 
             <Button 

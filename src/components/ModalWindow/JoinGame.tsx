@@ -72,7 +72,7 @@ function JoinGame() {
         }
 
         // ID and code are valid, new token is ready, proceed with the form submission
-        navigate("/bank", { state: { gameID: gameID, playerCode: playerGameCode, token: newToken } });
+        navigate("/player", { state: { gameID: gameID, playerCode: playerGameCode, token: newToken } });
         modalClose();
     };
 
