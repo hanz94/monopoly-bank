@@ -10,8 +10,8 @@ import { useModalContext } from "../../contexts/ModalContext";
 import newModalContent from "../../utils/newModalContent";
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
-import { scaleOnHover } from "../../utils/animations";
+import { motion, AnimatePresence } from "framer-motion";
+import { fadeInDown, scaleOnHover } from "../../utils/animations";
 import GameSessionHandler from "../../database/GameSessionHandler";
 
 function Bank() {
@@ -55,8 +55,17 @@ function Bank() {
                                         </StyledBadge>
                                     </Stack>
                                     <Box>
-                                        <Typography sx={{ my: 'auto', ml: 0.5, textAlign: 'left', fontSize: 17 }}>{dbPlayersInfo[playerCode].name} {dbPlayersInfo[playerCode].name == dbPlayersInfo[location.state?.playerCode]?.name && playerCode == location.state?.playerCode  && ' (Ty)'}</Typography>
-                                        <Typography sx={{ my: 'auto', ml: 0.95, textAlign: 'left', fontSize: 12, fontWeight: 'bold' }}>{dbPlayersInfo[playerCode].balance} {gameInfo.currency}</Typography>
+                                        <Typography 
+                                        sx={{ my: 'auto', ml: 0.5, textAlign: 'left', fontSize: 17 }}>{dbPlayersInfo[playerCode].name} {dbPlayersInfo[playerCode].name == dbPlayersInfo[location.state?.playerCode]?.name && playerCode == location.state?.playerCode  && ' (Ty)'}</Typography>
+                                        <AnimatePresence mode="wait">
+                                            <Typography
+                                            sx={{ my: 'auto', ml: 0.95, textAlign: 'left', fontSize: 12, fontWeight: 'bold' }}
+                                            component={motion.div}
+                                            key={dbPlayersInfo[playerCode].balance}
+                                            {...scaleOnHover}
+                                            {...fadeInDown} 
+                                            >{dbPlayersInfo[playerCode].balance} {gameInfo.currency}</Typography>
+                                        </AnimatePresence>
                                     </Box>
                                 </AccordionSummary>
                                 <AccordionDetails>

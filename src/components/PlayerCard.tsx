@@ -10,22 +10,23 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
     return ( 
         <>
             <Box> 
+
             <Typography>Identyfikator gry: <b>{gameID}</b> </Typography>
             <Typography>Indywidualny kod gracza: <b>{playerCode}</b> </Typography>
 
-                {/* <Typography sx ={{ my: 0.6 }} color={playerStatus === 'online' ? 'success' : 'error'}>{playerStatus.toLocaleUpperCase()}</Typography> */}
                 <Box sx={{ mt: 0.5, mb: 0.7 }}>
-                <ShiningText 
-                duration="5s" 
-                textColor={playerStatus === 'online' ? '#66bb6a' : 'red'}
-                >
-                {playerStatus.toLocaleUpperCase()}
-                </ShiningText>
+                    <ShiningText 
+                    duration="5s" 
+                    textColor={playerStatus === 'online' ? '#66bb6a' : 'red'}
+                    >
+                    {playerStatus.toLocaleUpperCase()}
+                    </ShiningText>
                 </Box>
 
             </Box>
 
             <Box sx={{ mb: 0.7 }}>
+
                 <Button 
                 variant="outlined"
                 sx={{display: 'inline', mr: 1}} 
@@ -51,6 +52,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                     Zwiększ {currency}
                 </Button>
             </Box>
+
             <Button
             variant="outlined"
             sx={{ display: 'inline', mr: 1 }}
@@ -60,9 +62,9 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                     content: <ChangePlayerBalance type="change" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
                 })
             }
-        >
-            Zmień stan konta
-        </Button>
+            >
+                Zmień stan konta
+            </Button>
 
         </>
     );
