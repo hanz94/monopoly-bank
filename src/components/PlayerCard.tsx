@@ -33,7 +33,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                 onClick={() =>
                     modalOpen({
                         title: 'Zmniejsz stan konta',
-                        content: <ChangePlayerBalance type="decrease" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                        content: <ChangePlayerBalance type="bank-decrease" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
                     })
                 }
                 >
@@ -45,7 +45,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
                 onClick={() =>
                     modalOpen({
                         title: 'Zwiększ stan konta',
-                        content: <ChangePlayerBalance type="increase" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                        content: <ChangePlayerBalance type="bank-increase" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
                     })
                 }
                 >
@@ -59,7 +59,7 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
             onClick={() =>
                 modalOpen({
                     title: 'Zmień stan konta',
-                    content: <ChangePlayerBalance type="change" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
+                    content: <ChangePlayerBalance type="bank-change" gameID={gameID} playerName={playerName} playerCode={playerCode} playerBalance={playerBalance} currency={currency} />,
                 })
             }
             >

@@ -1,6 +1,8 @@
 import { Box, Button, Typography } from '@mui/material';
 import CircularProgress from "@mui/material/CircularProgress";
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import { useModalContext } from "../../contexts/ModalContext";
+import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +10,8 @@ import { fadeInDown, scaleOnHover } from "../../utils/animations";
 import GameSessionHandler from '../../database/GameSessionHandler';
 
 function Player() {
+
+    const { modalOpen } = useModalContext();
 
     const { gameInfo, dbPlayersInfo } = useGameContext();
     
@@ -72,7 +76,12 @@ function Player() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2, mx: 0 }} 
-                    onClick={() => window.location.reload()}
+                    onClick={() =>
+                        modalOpen({
+                            title: 'Podatek (wpłata do banku)',
+                            content: <ChangePlayerBalance type="player-deposit-to-bank" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} />,
+                        })
+                    }
                 >
                     Podatek
                 </Button>
@@ -81,7 +90,12 @@ function Player() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2, mx: 0 }} 
-                    onClick={() => window.location.reload()}
+                    onClick={() =>
+                        modalOpen({
+                            title: 'Bonus (wypłata z banku)',
+                            content: <ChangePlayerBalance type="player-withdraw-from-bank" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} />,
+                        })
+                    }
                 >
                     Bonus
                 </Button>
@@ -90,9 +104,14 @@ function Player() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                    onClick={() => window.location.reload()}
+                    onClick={() =>
+                        modalOpen({
+                            title: 'Przejście przez start',
+                            content: <ChangePlayerBalance type="player-crossstartbonus" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} crossStartBonus={gameInfo.crossStartBonus} />,
+                        })
+                    }
                 >
-                    "Przejście przez start"
+                    Przejście przez start
                 </Button>
             </Box>
 
