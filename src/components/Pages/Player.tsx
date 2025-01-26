@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import CircularProgress from "@mui/material/CircularProgress";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,9 +31,9 @@ function Player() {
                         <Typography
                         variant="h4"
                         component={motion.div}
-                        key={playerBalance} // Key based on balance
+                        key={playerBalance}
                         {...scaleOnHover}
-                        {...fadeInDown} // Use fade-in-down animation
+                        {...fadeInDown}
                         >
                         {playerBalance} {gameInfo.currency}
                         </Typography>
@@ -40,6 +41,59 @@ function Player() {
                         <CircularProgress /> // Show loading icon if balance is not available
                     )}
                 </AnimatePresence>
+            </Box>
+
+            {/* Inline Action Panel */}
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 1, textAlign: 'center' }}>
+                <Button 
+                    variant="contained" 
+                    component={motion.button} 
+                    {...scaleOnHover} 
+                    sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
+                    onClick={() => window.location.reload()}
+                >
+                    Nowy przelew
+                </Button>
+                <Button 
+                    variant="contained" 
+                    component={motion.button} 
+                    {...scaleOnHover} 
+                    sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
+                    onClick={() => window.location.reload()}
+                >
+                    Poproś o przelew
+                </Button>
+            </Box>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 1, textAlign: 'center' }}>
+                <Button 
+                    variant="contained" 
+                    component={motion.button} 
+                    {...scaleOnHover} 
+                    sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2, mx: 0 }} 
+                    onClick={() => window.location.reload()}
+                >
+                    Podatek
+                </Button>
+                <Button 
+                    variant="contained" 
+                    component={motion.button} 
+                    {...scaleOnHover} 
+                    sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2, mx: 0 }} 
+                    onClick={() => window.location.reload()}
+                >
+                    Bonus
+                </Button>
+                <Button 
+                    variant="contained" 
+                    component={motion.button} 
+                    {...scaleOnHover} 
+                    sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
+                    onClick={() => window.location.reload()}
+                >
+                    "Przejście przez start"
+                </Button>
             </Box>
 
             {/* Other players list */}
@@ -58,12 +112,13 @@ function Player() {
             </Box>
 
             <Button 
-                variant="contained" 
+                variant="contained"
                 component={motion.button} 
                 {...scaleOnHover} 
                 sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
                 onClick={() => navigate('/bank', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}
             >
+                <AccountBalanceIcon fontSize='small' sx={{ mr: 1.2 }} />
                 Wejdź do banku
             </Button>
         </>
