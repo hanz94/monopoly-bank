@@ -3,6 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useModalContext } from "../../contexts/ModalContext";
 import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
+import ChooseOtherPlayer from '../ModalWindow/ChooseOtherPlayer';
 import { useGameContext } from "../../contexts/GameContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,7 +56,10 @@ function Player() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                    onClick={() => window.location.reload()}
+                    onClick={() => modalOpen({
+                        title: 'Nowy przelew',
+                        content: <ChooseOtherPlayer target="create-transfer" />,
+                    })}
                 >
                     Nowy przelew
                 </Button>
@@ -64,7 +68,10 @@ function Player() {
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                    onClick={() => window.location.reload()}
+                    onClick={() => modalOpen({
+                        title: 'Poproś o przelew',
+                        content: <ChooseOtherPlayer target="ask-for-transfer" />,
+                    })}
                 >
                     Poproś o przelew
                 </Button>

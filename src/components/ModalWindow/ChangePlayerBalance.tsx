@@ -6,16 +6,19 @@ import { ref, set, get } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
 
 interface ChangePlayerBalanceProps {
-    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank';
+    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank' | 'player-transfer';
     gameID: number | string;
     playerName: string;
     playerCode: string;
     playerBalance: number | string;
     currency: string;
-    crossStartBonus?: number | string;
+    crossStartBonus?: number | string; // obligatory only with type: player-crossstartbonus
+    playerNameTransferTarget?: string; // obligatory only with type: player-transfer
+    playerCodeTransferTarget?: string; // obligatory only with type: player-transfer
+    playerBalanceTransferTarget?: number | string; // obligatory only with type: player-transfer
 }
 
-function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus }: ChangePlayerBalanceProps) {
+function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus, playerNameTransferTarget, playerCodeTransferTarget, playerBalanceTransferTarget }: ChangePlayerBalanceProps) {
 
     const [newPlayerBalance, setNewPlayerBalance] = useState<number | null>(null); // Allow null to track initial empty state
     const [isValid, setIsValid] = useState(false); // Tracks if the number is valid
@@ -36,6 +39,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             throw new Error('New balance must be a number.');
         }
 
+        // Get the balance of the player who sends the transfer
         const balanceRef = ref(db, `games/game-${gameID}/players/${playerCode}/balance`);
     
         try {
@@ -69,7 +73,30 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     }
                     modalClose();
                     break;
-    
+                case 'player-transfer':
+                    // Get the balance of the player who receives the transfer
+                    const balanceRefTransferTarget = ref(db, `games/game-${gameID}/players/${playerCodeTransferTarget}/balance`);
+
+                    const increaseSnapshotTransfer = await get(balanceRefTransferTarget);
+                    const decreaseSnapshotTransfer = await get(balanceRef);
+
+                    if (increaseSnapshotTransfer.exists() && decreaseSnapshotTransfer.exists()) {
+
+                        // Increase the balance of the player who receives the transfer
+                        const currentBalanceReceiver = Number(increaseSnapshotTransfer.val());
+                        await set(balanceRefTransferTarget, currentBalanceReceiver + Number(newBalance));
+
+                        // Decrease the balance of the player who sends the transfer
+                        const currentBalanceSender = Number(decreaseSnapshotTransfer.val());
+                        await set(balanceRef, currentBalanceSender - Number(newBalance));
+
+                    } 
+                    else {
+                        throw new Error("Current balance does not exist.");
+                    }
+                    modalClose();
+                    break;
+
                 default:
                     throw new Error('Invalid type');
             }
@@ -90,14 +117,24 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
         <>
             {/* Player details info */}
             <Typography sx={{ textAlign: 'center' }}>
-                {playerName}&nbsp;({playerCode})
+                <b>{playerName}</b>&nbsp;({playerCode})
             </Typography>
 
-            {/* Current account balance info */}
+            {/* Current player balance info */}
             <Typography sx={{ mt: 1, textAlign: 'center' }}>Aktualny stan konta: <b>{playerBalance}&nbsp;{currency}</b></Typography>
 
-            {/* New Account Balance input for bank transfers */}
-            {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank') && (
+            {/* Target Player details info (the player who receives the transfer from this player) */}
+            {type == 'player-transfer' && playerCodeTransferTarget && (
+                <Typography sx={{ mt: 1, textAlign: 'center' }}>Przelew do gracza: <b>{playerNameTransferTarget}</b>&nbsp;({playerCodeTransferTarget})</Typography>
+            )}
+
+            {/* Target player balance info (the player who receives the transfer from this player) */}
+            {type == 'player-transfer' && playerCodeTransferTarget && (
+                <Typography sx={{ mt: 1, textAlign: 'center' }}>Aktualny stan konta odbiorcy: <b>{playerBalanceTransferTarget}&nbsp;{currency}</b></Typography>    
+            )}
+
+            {/* New Player Balance input for bank and player transfers */}
+            {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank' || type == 'player-transfer') && (
                 <TextField
                     variant="standard"
                     autoComplete="off"
@@ -111,8 +148,8 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                         if (validateNumber(value)) {
                             let newValue = Number(value);
                 
-                            // Additional validation for bank-decrease or player-deposit-to-bank type - limit to current balance - to prevent negative balance
-                            if ((type === "bank-decrease" || type === "player-deposit-to-bank") && newValue > Number(playerBalance)) {
+                            // Additional validation for bank-decrease, player-deposit-to-bank and player-transfer type - limit to current balance - to prevent negative balance
+                            if ((type === "bank-decrease" || type === "player-deposit-to-bank" || type === "player-transfer") && newValue > Number(playerBalance)) {
                                 newValue = Number(playerBalance);
                             }
                 
@@ -206,6 +243,23 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     </Typography>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Czy jesteś pewien, że chcesz pobrać dodatek "Przejście przez start"?
+                    </Typography>
+                </>
+            )}
+
+            {type == 'player-transfer' && isValid && (
+                <>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        <b>{playerNameTransferTarget}</b> otrzyma <b>{newPlayerBalance}&nbsp;{currency}</b>.
+                    </Typography>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        Nowy stan konta odbiorcy: <b>{Number(playerBalanceTransferTarget) + Number(newPlayerBalance)}&nbsp;{currency}</b>
+                    </Typography>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        Pozostała kwota do wydania: <b>{Number(playerBalance) - Number(newPlayerBalance)}&nbsp;{currency}</b>
+                    </Typography>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        Czy jesteś pewien, że chcesz dokonać przelewu? 
                     </Typography>
                 </>
             )}
