@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import SettingsIcon from '@mui/icons-material/Settings';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import PersonIcon from '@mui/icons-material/Person';
 import Avatar from '@mui/material/Avatar';
 import { StyledBadge } from '../../contexts/ThemeContext';
 import Stack from '@mui/material/Stack';
@@ -71,8 +72,15 @@ function HeaderAppBar() {
                 Monopoly Bank
               </Typography>
 
+              {/* Go to Bank icon */}
+              {location.pathname === "/player" && (
+                <Button color="inherit" onClick={() => navigate('/bank', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}><AccountBalanceIcon /></Button>
+              )}
 
-              <Button color="inherit" onClick={() => modalOpen(newModalContent.changeNickname)}><SettingsIcon /></Button>
+              {/* Go to Player icon */}
+              {location.pathname === "/bank" && (
+                <Button color="inherit" onClick={() => navigate('/player', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}><PersonIcon /></Button>
+              )}
 
               <DarkModeSwitch checked={mode === 'dark'} onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')} size={24} sunColor='currentColor' moonColor='currentColor' />
 

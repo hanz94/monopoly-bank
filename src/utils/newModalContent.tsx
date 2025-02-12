@@ -1,4 +1,3 @@
-import ChangeNickname from "../components/ModalWindow/ChangeNickname";
 import NewGame from "../components/ModalWindow/NewGame";
 import DefineNewPlayers from "../components/ModalWindow/DefineNewPlayers";
 import JoinGame from "../components/ModalWindow/JoinGame";
@@ -6,10 +5,6 @@ import Instruction from "../components/ModalWindow/Instruction";
 import DeleteGameConfirmation from "../components/ModalWindow/DeleteGameConfirmation";
 
     const newModalContent = {
-            changeNickname: {
-                title: "Wybierz pseudonim",
-                content: <ChangeNickname />
-            },
             newGame: {
                 title: "Nowa gra",
                 content: <NewGame />

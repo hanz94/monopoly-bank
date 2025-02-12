@@ -125,13 +125,13 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
 
             {/* Target Player details info (the player who receives the transfer from this player) */}
             {type == 'player-transfer' && playerCodeTransferTarget && (
-                <Typography sx={{ mt: 1, textAlign: 'center' }}>Przelew do gracza: <b>{playerNameTransferTarget}</b>&nbsp;({playerCodeTransferTarget})</Typography>
+                <Typography sx={{ mt: 1.9, textAlign: 'center' }}>Przelew do gracza: <b>{playerNameTransferTarget}</b>&nbsp;({playerCodeTransferTarget})</Typography>
             )}
 
             {/* Target player balance info (the player who receives the transfer from this player) */}
-            {type == 'player-transfer' && playerCodeTransferTarget && (
+            {/* {type == 'player-transfer' && playerCodeTransferTarget && (
                 <Typography sx={{ mt: 1, textAlign: 'center' }}>Aktualny stan konta odbiorcy: <b>{playerBalanceTransferTarget}&nbsp;{currency}</b></Typography>    
-            )}
+            )} */}
 
             {/* New Player Balance input for bank and player transfers */}
             {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank' || type == 'player-transfer') && (
@@ -252,9 +252,9 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         <b>{playerNameTransferTarget}</b> otrzyma <b>{newPlayerBalance}&nbsp;{currency}</b>.
                     </Typography>
-                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                    {/* <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Nowy stan konta odbiorcy: <b>{Number(playerBalanceTransferTarget) + Number(newPlayerBalance)}&nbsp;{currency}</b>
-                    </Typography>
+                    </Typography> */}
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Pozostała kwota do wydania: <b>{Number(playerBalance) - Number(newPlayerBalance)}&nbsp;{currency}</b>
                     </Typography>

@@ -5,13 +5,12 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import PersonIcon from '@mui/icons-material/Person';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PlayerCard from "../PlayerCard";
 import { useModalContext } from "../../contexts/ModalContext";
 import newModalContent from "../../utils/newModalContent";
 import { useGameContext } from "../../contexts/GameContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeInDown, scaleOnHover } from "../../utils/animations";
 import GameSessionHandler from "../../database/GameSessionHandler";
@@ -22,7 +21,6 @@ function Bank() {
 
     const { gameInfo, dbPlayersInfo } = useGameContext();
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     return ( 
@@ -86,17 +84,6 @@ function Bank() {
                     })}
                 </Grid>
             </Typography>
-
-            <Button 
-                variant="contained" 
-                component={motion.button} 
-                {...scaleOnHover} 
-                sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 
-                onClick={() => navigate('/player', { state: { gameID: location.state.gameID, playerCode: location.state.playerCode, token: location.state.token } })}
-            >   
-                <PersonIcon sx={{ mr: 0.8 }} />
-                Panel gracza ({dbPlayersInfo[location.state.playerCode]?.name})
-            </Button>
 
             <Button 
                 variant="contained" 

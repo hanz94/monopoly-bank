@@ -21,7 +21,7 @@ function ChooseOtherPlayer( {target} : TargetType ) {
     return ( 
         <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Typography variant="h6" sx={{ fontSize: '1.1em', my: 0.6 }}>
-                    {target == 'create-transfer' && 'Komu zlecić przelew?'}
+                    {target == 'create-transfer' && 'Komu wykonać przelew?'}
                     {target == 'ask-for-transfer' && 'Kogo poprosić o przelew?'}
                     </Typography>
                 {Object.keys(dbPlayersInfo).map((playerCode, index) => {
