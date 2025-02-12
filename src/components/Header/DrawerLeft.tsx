@@ -11,6 +11,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CallIcon from '@mui/icons-material/Call';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { useLocation } from "react-router-dom";
@@ -83,6 +84,7 @@ export default function DrawerLeft() {
           </List>
           <Divider />
         </>)}
+
         <List>
           <ListItem disablePadding>
             <ListItemButton>
@@ -92,6 +94,16 @@ export default function DrawerLeft() {
               <ListItemText primary="Powiadomienia" />
             </ListItemButton>
           </ListItem>
+          {dbPlayersInfo[location.state?.playerCode]?.name && (
+            <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon sx={{ ml: 1 }}>
+                <ManageSearchIcon />
+              </ListItemIcon>
+              <ListItemText primary="Historia transakcji" />
+            </ListItemButton>
+          </ListItem>
+          )}
           <ListItem disablePadding>
             <ListItemButton onClick={toggleTheme}>
               <ListItemIcon sx={{ ml: 1 }}>
@@ -101,6 +113,7 @@ export default function DrawerLeft() {
             </ListItemButton>
           </ListItem>
         </List>
+
       </Box>
     </SwipeableDrawer>
   );
