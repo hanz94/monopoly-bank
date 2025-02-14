@@ -178,7 +178,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             {type == 'bank-increase' && isValid && (
                 <>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
-                        {playerName} otrzyma {newPlayerBalance}&nbsp;{currency}.
+                        <b>{playerName}</b> otrzyma <b>{newPlayerBalance}&nbsp;{currency}</b>.
                     </Typography>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Nowy stan konta: <b>{Number(playerBalance) + Number(newPlayerBalance)}&nbsp;{currency}</b>
@@ -189,7 +189,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             {type == 'bank-decrease' && isValid && (
                 <>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
-                        {playerName} straci {newPlayerBalance}&nbsp;{currency}.
+                    <b>{playerName}</b> straci <b>{newPlayerBalance}&nbsp;{currency}</b>.
                     </Typography>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Nowy stan konta: <b>{Number(playerBalance) - Number(newPlayerBalance)}&nbsp;{currency}</b>
@@ -200,7 +200,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             {type == 'bank-change' && isValid && (
                 <>
                     {playerBalance !== newPlayerBalance && <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
-                        {playerName} {Number(playerBalance) > newPlayerBalance! ? 'straci' : 'otrzyma'} {Math.abs(newPlayerBalance! - Number(playerBalance))}&nbsp;{currency}.
+                        <b>{playerName}</b> {Number(playerBalance) > newPlayerBalance! ? 'straci' : 'otrzyma'} <b>{Math.abs(newPlayerBalance! - Number(playerBalance))}&nbsp;{currency}</b>.
                     </Typography>}
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Nowy stan konta: <b>{newPlayerBalance}&nbsp;{currency}</b>
