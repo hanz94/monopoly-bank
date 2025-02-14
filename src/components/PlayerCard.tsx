@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Typography, Button, Box } from "@mui/material";
 import { IsPlayerBankSwitch } from "../contexts/ThemeContext";
 import { useModalContext } from "../contexts/ModalContext";
+import { useGameContext } from "../contexts/GameContext";
 import { useLocation } from "react-router-dom";
 import ChangePlayerBalance from "./ModalWindow/ChangePlayerBalance";
 import ShiningText from "shiny-text";
@@ -19,10 +20,23 @@ interface PlayerCardProps {
 function PlayerCard({ currency, gameID, playerCode, playerName, playerBalance, playerStatus, playerIsBank }: PlayerCardProps) {
 
     const { modalOpen } = useModalContext();
-    
+    const { dbPlayersInfo, updateBankPermissions } = useGameContext();
+
     const [isPlayerBankChecked, setIsPlayerBankChecked] = useState(playerIsBank === 'true')
 
     const location = useLocation();
+
+    const bankSwitchHandler = () => {
+        setIsPlayerBankChecked(!isPlayerBankChecked)
+        updateBankPermissions(Number(gameID), playerCode, isPlayerBankChecked ? 'false' : 'true')
+    }
+
+    //watch for bank permission changes
+    useEffect(() => {
+        // setIsPlayerBankChecked(playerIsBank === 'true')
+        if (dbPlayersInfo[playerCode].isBank === 'true') setIsPlayerBankChecked(true)
+        else if (dbPlayersInfo[playerCode].isBank === 'false') setIsPlayerBankChecked(false)
+    }, [dbPlayersInfo[playerCode].isBank])
     
     return ( 
         <>
@@ -40,13 +54,13 @@ function PlayerCard({ currency, gameID, playerCode, playerName, playerBalance, p
                     </ShiningText>
                 </Box>
 
-                <Box sx={{ my: 0.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {playerIsBank === 'owner' && <Typography>Właściciel</Typography>}
+                <Box sx={{ mt: 0.5, mb: 1.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {playerIsBank === 'owner' && <Typography sx={{ fontStyle: 'italic', fontWeight: 'bold', fontSize: '0.9em' }}>Właściciel</Typography>}
                     {(playerIsBank === 'true' || playerIsBank === 'false') && playerCode !== location.state?.playerCode &&
                         <IsPlayerBankSwitch 
                             checked={isPlayerBankChecked}
                             isChecked={isPlayerBankChecked}
-                            onChange={() => setIsPlayerBankChecked(!isPlayerBankChecked)}
+                            onChange={bankSwitchHandler}
                         />             
                     }
                 </Box>

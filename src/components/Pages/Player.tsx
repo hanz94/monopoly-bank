@@ -69,7 +69,7 @@ function Player() {
                     Nowy przelew
                 </Button>
                 <Button 
-                    variant="contained" 
+                    variant="contained"
                     component={motion.button} 
                     {...scaleOnHover} 
                     sx={{ p: 1.4, margin: 'auto', display: 'block', mt: 2 }} 

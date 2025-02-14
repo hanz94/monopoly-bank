@@ -34,6 +34,7 @@ interface GameContextType {
   dbPlayersInfo: DbPlayersInfo;
   setDbPlayersInfo: React.Dispatch<React.SetStateAction<DbPlayersInfo>>;
   updateOnlineStatus: (gameID: number, playerCode: string, status: string) => Promise<void>;
+  updateBankPermissions: (gameID: number, playerCode: string, isBank: "true" | "false") => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -81,6 +82,24 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       }
   };
 
+  const updateBankPermissions = async (gameID: number, playerCode: string, isBank: "true" | "false") => {
+      const nodeRef = ref(db, `/games/game-${gameID}/players/${playerCode}/isBank`);
+  
+      try {
+          // Check if the node exists
+          const snapshot = await get(nodeRef);
+  
+          if (snapshot.exists()) {
+              // Update the status if the node exists
+              await set(nodeRef, isBank);
+          } else {
+              console.log(`isBank Node does not exist for player ${playerCode} in game ${gameID}.`);
+          }
+      } catch (error) {
+          console.error("Error updating online status:", error);
+      }
+  }
+
   const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
 
   return (
@@ -97,7 +116,8 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         resetGameContext,
         dbPlayersInfo,
         setDbPlayersInfo,
-        updateOnlineStatus
+        updateOnlineStatus,
+        updateBankPermissions
       }}
     >
       {children}
