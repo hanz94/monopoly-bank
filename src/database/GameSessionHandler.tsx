@@ -8,7 +8,8 @@ type DbPlayersInfo = {
     [key: string]: {
         name: string,
         balance: number,
-        status: string
+        status: string,
+        isBank: 'owner' | 'true' | 'false'
     }
   }
 
@@ -75,7 +76,8 @@ function GameSessionHandler() {
                         updatedPlayersInfo[player] = {
                             name: dbData.players[player].name,
                             balance: dbData.players[player].balance,
-                            status: dbData.players[player].status
+                            status: dbData.players[player].status,
+                            isBank: dbData.players[player].isBank.toString(),
                         };
                     }
         

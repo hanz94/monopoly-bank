@@ -88,7 +88,7 @@ export const createGame = async (newGameOptions: NewGameOptions) => {
     newPlayerCodes.forEach( (playerCode, index) => {
         playersDbObj[playerCode] = {
             name: playerNames[index],
-            isBank: true,
+            isBank: index == 0 ? "owner" : "false",
             balance: newGameOptions.initialBalance,
             status: "offline"
         }

@@ -14,6 +14,7 @@ type GameInfo = {
 
 type DbPlayersInfo = {
   [key: string]: {
+      isBank: "true" | "false" | "owner";
       name: string,
       balance: number,
       status: string

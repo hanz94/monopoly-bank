@@ -76,6 +76,7 @@ function Bank() {
                                     playerName={dbPlayersInfo[playerCode].name}
                                     playerBalance={dbPlayersInfo[playerCode].balance}
                                     playerStatus={dbPlayersInfo[playerCode].status}
+                                    playerIsBank={dbPlayersInfo[playerCode].isBank}
                                 /> 
                                 </AccordionDetails>
                             </Accordion>

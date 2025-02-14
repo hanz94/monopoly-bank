@@ -1,12 +1,29 @@
+import { useState } from "react";
 import { Typography, Button, Box } from "@mui/material";
+import { IsPlayerBankSwitch } from "../contexts/ThemeContext";
 import { useModalContext } from "../contexts/ModalContext";
+import { useLocation } from "react-router-dom";
 import ChangePlayerBalance from "./ModalWindow/ChangePlayerBalance";
 import ShiningText from "shiny-text";
 
-function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, playerStatus }: { currency: string, gameID: number | string, playerName: string, playerCode: string, playerBalance: number | string, playerStatus: string }) {
+interface PlayerCardProps {
+    currency: string;
+    gameID: number | string;
+    playerCode: string;
+    playerName: string;
+    playerBalance: number | string;
+    playerStatus: string;
+    playerIsBank: 'owner' | 'true' | 'false';
+}
+
+function PlayerCard({ currency, gameID, playerCode, playerName, playerBalance, playerStatus, playerIsBank }: PlayerCardProps) {
 
     const { modalOpen } = useModalContext();
+    
+    const [isPlayerBankChecked, setIsPlayerBankChecked] = useState(playerIsBank === 'true')
 
+    const location = useLocation();
+    
     return ( 
         <>
             <Box> 
@@ -14,13 +31,24 @@ function PlayerCard({currency, gameID, playerCode, playerName, playerBalance, pl
             <Typography>Identyfikator gry: <b>{gameID}</b> </Typography>
             <Typography>Indywidualny kod gracza: <b>{playerCode}</b> </Typography>
 
-                <Box sx={{ mt: 0.5, mb: 0.7 }}>
+                <Box sx={{ mt: 0.5 }}>
                     <ShiningText 
                     duration="5s" 
                     textColor={playerStatus === 'online' ? '#66bb6a' : 'red'}
                     >
                     {playerStatus.toLocaleUpperCase()}
                     </ShiningText>
+                </Box>
+
+                <Box sx={{ my: 0.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {playerIsBank === 'owner' && <Typography>Właściciel</Typography>}
+                    {(playerIsBank === 'true' || playerIsBank === 'false') && playerCode !== location.state?.playerCode &&
+                        <IsPlayerBankSwitch 
+                            checked={isPlayerBankChecked}
+                            isChecked={isPlayerBankChecked}
+                            onChange={() => setIsPlayerBankChecked(!isPlayerBankChecked)}
+                        />             
+                    }
                 </Box>
 
             </Box>
