@@ -79,16 +79,23 @@ function GameSessionHandler() {
                         };
                     }
         
-                    //sort players by name
-                    // Convert the object into an array of entries
+                    // Sort players by name alphabetically + this player goes first
+                    const playerCode = location.state?.playerCode; 
                     const entries = Object.entries(updatedPlayersInfo);
-                    // Sort the array by the "name" property
-                    entries.sort(([, a], [, b]) => a.name.localeCompare(b.name));
-                    // Convert the sorted array back into an object
-                    const sortedPlayersInfo = Object.fromEntries(entries);
-        
+                    const matchedEntry = entries.find(([key]) => key === playerCode);
+
+                    const sortedEntries = entries
+                        .filter(([key]) => key !== playerCode)
+                        .sort(([, a], [, b]) => a.name.localeCompare(b.name));
+
+                    const sortedPlayersInfo = matchedEntry 
+                        ? Object.fromEntries([matchedEntry, ...sortedEntries]) 
+                        : Object.fromEntries(sortedEntries);
+
                     setDbPlayersInfo(sortedPlayersInfo);
-        
+
+
+                    //Set game info
                     setGameInfo({
                         ...gameInfo,
                         currency: dbData.currency,
