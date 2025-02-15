@@ -21,6 +21,7 @@ import { useThemeContext } from '../../contexts/ThemeContext';
 import { useDrawerContext } from '../../contexts/DrawerContext';
 import ChooseOtherPlayer from '../ModalWindow/ChooseOtherPlayer';
 import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
+import TransactionHistory from '../ModalWindow/TransactionHistory';
 
 
 export default function DrawerLeft() {
@@ -96,7 +97,8 @@ export default function DrawerLeft() {
           </ListItem>
           {dbPlayersInfo[location.state?.playerCode]?.name && (
             <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => modalOpen({ title: 'Historia transakcji', content: <TransactionHistory /> })}>
               <ListItemIcon sx={{ ml: 1 }}>
                 <ManageSearchIcon />
               </ListItemIcon>
