@@ -1,55 +1,131 @@
-import { List, ListItem, ListItemAvatar, ListItemText, Avatar } from "@mui/material";
+import { useState, useEffect } from "react";
+import { List, ListItem, ListItemAvatar, ListItemText, Avatar, IconButton, Typography } from "@mui/material";
+import { FirstPage, LastPage, NavigateBefore, NavigateNext } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
-import { useGameContext } from "../../contexts/GameContext";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { useGameContext } from "../../contexts/GameContext";
+import { ref, onValue } from "firebase/database";
+import { db } from "../../database/firebaseConfig";
 
-const exampleNotifications = [
-  { id: 1, type: "info", textPrimary: "Witamy w grze!", textSecondary: "Rozpoczynasz grę z kwotą 1500 PLN.", timestamp: 11, read: false },
-  { id: 2, type: "transfer-request", from: "Gracz 1", amount: 100, timestamp: 11, status: "pending", read: false }
-];
+type NotificationType = {
+  id: number;
+  type: "info" | "transfer-request";
+  textPrimary?: string;
+  textSecondary?: string;
+  from?: string;
+  amount?: number;
+  status?: "pending" | "accepted" | "declined";
+  timestamp: number;
+  read: boolean;
+};
 
 function Notifications() {
 
-    const { gameInfo } = useGameContext();
+    const { gameInfo, dbPlayersInfo, getNotifications } = useGameContext();
 
-  return (
-    <List sx={{ width: "100%", maxWidth: 360 }}>
-      {exampleNotifications.map((notification) => (
-        <ListItem key={notification.id}>
-          <ListItemAvatar>
-            <Avatar>
-              {notification.type === "info" && <InfoIcon />}
-              {notification.type === "transfer-request" && <AccountBalanceWalletIcon />}
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={
-                notification.type === "info"
-                ? notification.textPrimary
-                : notification.type === "transfer-request"
-                ? `Prośba o przelew od ${notification.from}`
-                : ""
+    const [notifications, setNotifications] = useState<NotificationType[]>([]);
+    const [page, setPage] = useState(0);
+    const rowsPerPage = 4;
+
+    // Fetch notifications and observe changes
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const fetchedNotifications = await getNotifications(gameInfo.playerCode);
+                // Sort notifications by timestamp - desc
+                fetchedNotifications.sort((a: NotificationType, b: NotificationType) => b.timestamp - a.timestamp);
+                setNotifications(fetchedNotifications);
+            } catch (err) {
+                console.log("Error fetching notifications:", err);
             }
-            secondary={
-                notification.type === "info"
-                ? notification.textSecondary
-                : notification.type === "transfer-request"
-                ? `Kwota: ${notification.amount} ${gameInfo.currency} | ${
-                    notification.status === "accepted"
-                        ? "Zaakceptowana"
-                        : notification.status === "declined"
-                        ? "Odrzucona"
-                        : notification.status === "pending"
-                        ? "Oczekująca"
-                        : ""
-                    }`
-                : ""
-            }
-            />
-        </ListItem>
-      ))}
-    </List>
-  );
+        };
+
+        const notificationsRef = ref(db, `/access/${gameInfo.playerCode}/notifications`);
+
+        //Attach listener
+        const notificationsListener = onValue
+        (notificationsRef, (snapshot) => {
+            const fetchedNotifications = snapshot.val();
+            // Sort notifications by timestamp - desc
+            fetchedNotifications.sort((a: NotificationType, b: NotificationType) => b.timestamp - a.timestamp);
+            setNotifications(fetchedNotifications);
+        });
+
+        fetchNotifications();
+
+        return () => {
+            notificationsListener(); //remove listener
+        };
+
+    }, []);
+
+    const totalPages = Math.ceil(notifications.length / rowsPerPage);
+
+    return (
+        <>
+        {notifications.length > 0 ? (
+            <>
+            <List sx={{ width: "100%", maxWidth: 360 }}>
+            {notifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((notification) => (
+                <ListItem key={notification.id}>
+                    <ListItemAvatar>
+                        <Avatar>
+                            {notification.type === "info" && <InfoIcon />}
+                            {notification.type === "transfer-request" && <AccountBalanceWalletIcon />}
+                        </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={
+                            notification.type === "info"
+                                ? notification.textPrimary
+                                : notification.type === "transfer-request"
+                                ? `Prośba o przelew od ${notification.from ? dbPlayersInfo[notification.from]?.name ?? "Nieznany gracz" : "Nieznany gracz"}`
+                                : ""
+                        }
+                        secondary={
+                            notification.type === "info"
+                                ? notification.textSecondary
+                                : notification.type === "transfer-request"
+                                ? `${notification.amount ?? "Brak kwoty"} ${gameInfo.currency} | ${
+                                      notification.status === "accepted"
+                                          ? "Zaakceptowana"
+                                          : notification.status === "declined"
+                                          ? "Odrzucona"
+                                          : notification.status === "pending"
+                                          ? "Oczekująca"
+                                          : ""
+                                  }`
+                                : ""
+                        }
+                    />
+                </ListItem>
+            ))}
+            </List>
+
+            {/* Pagination Controls */}
+            {notifications.length  > rowsPerPage + 1 && 
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "10px", gap: "10px" }}>
+                <IconButton onClick={() => setPage(0)} disabled={page === 0}>
+                    <FirstPage />
+                </IconButton>
+                <IconButton onClick={() => setPage(page - 1)} disabled={page === 0}>
+                    <NavigateBefore />
+                </IconButton>
+                <Typography>{page + 1} z {totalPages}</Typography>
+                <IconButton onClick={() => setPage(page + 1)} disabled={(page + 1) * rowsPerPage >= notifications.length}>
+                    <NavigateNext />
+                </IconButton>
+                <IconButton onClick={() => setPage(totalPages - 1)} disabled={(page + 1) * rowsPerPage >= notifications.length}>
+                    <LastPage />
+                </IconButton>
+            </div>}
+            </>
+            ) : (
+                <Typography sx={{ mb: 0.9 }}>Brak powiadomień!</Typography>
+            )
+        }
+        </> 
+    );
 }
 
 export default Notifications;

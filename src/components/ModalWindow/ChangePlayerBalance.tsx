@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useModalContext } from "../../contexts/ModalContext";
 import { useGameContext } from "../../contexts/GameContext";
 import DoneIcon from '@mui/icons-material/Done';
-import { ref, set, get } from "firebase/database";
+import { ref, set, get, serverTimestamp } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
 
 interface ChangePlayerBalanceProps {
-    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank' | 'player-transfer';
+    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank' | 'player-transfer' | 'ask-for-transfer';
     gameID: number | string;
     playerName: string;
     playerCode: string;
@@ -112,6 +112,32 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     modalClose();
                     break;
 
+                case 'ask-for-transfer':
+                    //Access notifications of the other player
+                    const notificationRef = ref(db, `access/${playerCodeTransferTarget}/notifications`);
+                    try {
+                        const snapshot = await get(notificationRef);
+
+                        if (snapshot.exists()) {
+                            const newNotificationID = snapshot.size + 1;
+                            //Send notification to the other player
+                            await set(ref(db, `/access/${playerCodeTransferTarget}/notifications/${newNotificationID}`), {
+                                id: newNotificationID,
+                                type: 'transfer-request',
+                                from: playerCode,
+                                amount: Number(newBalance),
+                                timestamp: serverTimestamp(),
+                                status: 'pending',
+                                read: false
+                            });
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                    modalClose();
+                    break;
+
                 default:
                     throw new Error('Invalid type');
             }
@@ -143,13 +169,18 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                 <Typography sx={{ mt: 1.9, textAlign: 'center' }}>Przelew do gracza: <b>{playerNameTransferTarget}</b>&nbsp;({playerCodeTransferTarget})</Typography>
             )}
 
+            {/* Target Ask-for-transfer Player details info (the player who receives the notification from this player) */}
+            {type == 'ask-for-transfer' && playerCodeTransferTarget && (
+                <Typography sx={{ mt: 1.9, textAlign: 'center' }}>Prośba o przelew do gracza: <b>{playerNameTransferTarget}</b>&nbsp;({playerCodeTransferTarget})</Typography>
+            )}
+
             {/* Target player balance info (the player who receives the transfer from this player) */}
             {/* {type == 'player-transfer' && playerCodeTransferTarget && (
                 <Typography sx={{ mt: 1, textAlign: 'center' }}>Aktualny stan konta odbiorcy: <b>{playerBalanceTransferTarget}&nbsp;{currency}</b></Typography>    
             )} */}
 
             {/* New Player Balance input for bank and player transfers */}
-            {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank' || type == 'player-transfer') && (
+            {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank' || type == 'player-transfer' || type == 'ask-for-transfer') && (
                 <TextField
                     variant="standard"
                     autoComplete="off"
@@ -163,9 +194,14 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                         if (validateNumber(value)) {
                             let newValue = Number(value);
                 
-                            // Additional validation for bank-decrease, player-deposit-to-bank and player-transfer type - limit to current balance - to prevent negative balance
+                            // Additional validation for bank-decrease, player-deposit-to-bank and player-transfer type - limit to current balance of this player - to prevent negative balance
                             if ((type === "bank-decrease" || type === "player-deposit-to-bank" || type === "player-transfer") && newValue > Number(playerBalance)) {
                                 newValue = Number(playerBalance);
+                            }
+
+                            //Additional validation for ask-for-transfer type - limit to current balance of the other player - to prevent negative balance
+                            if (type === "ask-for-transfer" && newValue > Number(playerBalanceTransferTarget)) {
+                                newValue = Number(playerBalanceTransferTarget);
                             }
                 
                             setNewPlayerBalance(newValue);
@@ -275,6 +311,17 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     </Typography>
                     <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
                         Czy jesteś pewien, że chcesz dokonać przelewu? 
+                    </Typography>
+                </>
+            )}
+
+            {type == 'ask-for-transfer' && isValid && (
+                <>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        Wysyłasz prośbę do <b>{playerNameTransferTarget}</b> o przelew <b>{newPlayerBalance}&nbsp;{currency}.</b>
+                    </Typography>
+                    <Typography sx={{ mt: 1.8, textAlign: 'center' }}>
+                        Czy jesteś pewien?
                     </Typography>
                 </>
             )}

@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { child, get, ref, set } from "firebase/database";
+import { child, get, ref, serverTimestamp, set } from "firebase/database";
 
 type NewGameOptions = {
     currency: string;
@@ -95,7 +95,8 @@ export const createGame = async (newGameOptions: NewGameOptions) => {
 
         set(ref(db, `/access/${playerCode}`), {
             gameID: newId,
-            token: newToken
+            token: newToken,
+            notifications: { 1: { type: "info", textPrimary: "Witamy w grze!", textSecondary: `Rozpoczynasz grę z kwotą ${newGameOptions.initialBalance} ${newGameOptions.currency}.`, timestamp: serverTimestamp(), read: false }}
         }).catch((error) => {
             console.error(error);
         });

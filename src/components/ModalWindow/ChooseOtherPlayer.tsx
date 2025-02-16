@@ -57,7 +57,19 @@ function ChooseOtherPlayer( {target} : TargetType ) {
                                     else if (target == 'ask-for-transfer') {
                                         modalOpen({ 
                                             title: 'Poproś o przelew', 
-                                            content: <>{playerCode}</>
+                                            content: (
+                                                <ChangePlayerBalance 
+                                                    type='ask-for-transfer'
+                                                    playerNameTransferTarget={dbPlayersInfo[playerCode].name}  // Pass the name of the player who will receive the request
+                                                    playerCodeTransferTarget={playerCode} // Pass the playerCode of the player who will receive the request
+                                                    playerBalanceTransferTarget={dbPlayersInfo[playerCode].balance} // Pass the current balance of the player who will receive the request
+                                                    gameID={gameInfo.gameID} 
+                                                    playerName={dbPlayersInfo[location.state.playerCode].name} 
+                                                    playerCode={location.state.playerCode} 
+                                                    playerBalance={dbPlayersInfo[location.state.playerCode].balance} 
+                                                    currency={gameInfo.currency} 
+                                                />
+                                            ) 
                                         })
                                     }
                                 }

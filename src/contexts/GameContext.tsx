@@ -37,6 +37,7 @@ interface GameContextType {
   updateBankPermissions: (gameID: number, playerCode: string, isBank: "true" | "false") => Promise<void>;
   getTransactionHistory: (gameID: number) => Promise<any>;
   updateTransactionHistory: (gameID: number, newTransactionDetails: Object) => Promise<void>;
+  getNotifications: (playerCode: string) => Promise<any>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -69,11 +70,10 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       const nodeRef = ref(db, `/games/game-${gameID}/players/${playerCode}/status`);
   
       try {
-          // Check if the node exists
           const snapshot = await get(nodeRef);
   
           if (snapshot.exists()) {
-              // Update the status if the node exists
+              //Set new online status
               await set(nodeRef, status);
               console.log(`Status updated to "${status}" for player ${playerCode} in game ${gameID}.`);
           } else {
@@ -88,11 +88,10 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       const nodeRef = ref(db, `/games/game-${gameID}/players/${playerCode}/isBank`);
   
       try {
-          // Check if the node exists
           const snapshot = await get(nodeRef);
   
           if (snapshot.exists()) {
-              // Update the status if the node exists
+              //Set new isBank permission
               await set(nodeRef, isBank);
           } else {
               console.log(`isBank Node does not exist for player ${playerCode} in game ${gameID}.`);
@@ -106,11 +105,9 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       const nodeRef = ref(db, `/ids/${gameID}/transactionHistory`);
   
       try {
-          // Check if the node exists
           const snapshot = await get(nodeRef);
-  
           if (snapshot.exists()) {
-              // Update the status if the node exists
+              //Get transaction history
               return snapshot.val();
           } else {
               console.log(`transactionHistory Node does not exist for game ${gameID}.`);
@@ -124,12 +121,11 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       const nodeRef = ref(db, `/ids/${gameID}/transactionHistory`);
   
       try {
-          // Check if the node exists
           const snapshot = await get(nodeRef);
   
           if (snapshot.exists()) {
-              // Update with first transaction 
               const newTransactionID = snapshot.size + 1;
+              //Add new transaction to history
               await set(ref(db, `/ids/${gameID}/transactionHistory/${newTransactionID}`), {...newTransactionDetails, timestamp: serverTimestamp()});
           } else {
               console.log(`transactionHistory Node does not exist for game ${gameID}.`);
@@ -138,6 +134,23 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
           console.error("Error updating online status:", error);
       }
   }
+
+  const getNotifications = async (playerCode: string) => {
+      const nodeRef = ref(db, `/access/${playerCode}/notifications`);
+  
+      try {
+          const snapshot = await get(nodeRef);
+  
+          if (snapshot.exists()) {
+              //Get notifications
+              return snapshot.val();
+          } else {
+              console.log(`Notifications Node does not exist for player ${playerCode}.`);
+          }
+      } catch (error) {
+          console.error("Error getting notifications:", error);
+      }
+    }
 
   const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
 
@@ -158,7 +171,8 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         updateOnlineStatus,
         updateBankPermissions,
         getTransactionHistory,
-        updateTransactionHistory
+        updateTransactionHistory,
+        getNotifications
       }}
     >
       {children}
