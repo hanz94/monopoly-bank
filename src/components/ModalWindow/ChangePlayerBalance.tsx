@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useModalContext } from "../../contexts/ModalContext";
+import { useGameContext } from "../../contexts/GameContext";
 import DoneIcon from '@mui/icons-material/Done';
 import { ref, set, get } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
@@ -24,6 +25,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
     const [isValid, setIsValid] = useState(false); // Tracks if the number is valid
 
     const { modalClose } = useModalContext();
+    const { updateTransactionHistory } = useGameContext();
 
     const validateNumber = (value: string) => {
         // Only valid if it's a non-negative number
@@ -55,7 +57,10 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     const increaseSnapshot = await get(balanceRef);
                     if (increaseSnapshot.exists()) {
                         const currentBalance = Number(increaseSnapshot.val());
-                        await set(balanceRef, currentBalance + Number(newBalance));
+                        await set(balanceRef, currentBalance + Number(newBalance)).then(() => {
+                                updateTransactionHistory(Number(gameID), { from: 'bank', amount: Number(newBalance), to: playerCode });
+                            }
+                        );
                     } else {
                         throw new Error("Current balance does not exist.");
                     }
@@ -67,7 +72,9 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     const decreaseSnapshot = await get(balanceRef);
                     if (decreaseSnapshot.exists()) {
                         const currentBalance = Number(decreaseSnapshot.val());
-                        await set(balanceRef, currentBalance - Number(newBalance));
+                        await set(balanceRef, currentBalance - Number(newBalance)).then(() => {
+                            updateTransactionHistory(Number(gameID), { from: playerCode, amount: Number(newBalance), to: 'bank' });
+                        });
                     } else {
                         throw new Error("Current balance does not exist.");
                     }
@@ -84,11 +91,19 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
 
                         // Increase the balance of the player who receives the transfer
                         const currentBalanceReceiver = Number(increaseSnapshotTransfer.val());
-                        await set(balanceRefTransferTarget, currentBalanceReceiver + Number(newBalance));
+                        await set(balanceRefTransferTarget, currentBalanceReceiver + Number(newBalance)).catch((error) => {
+                            console.error(error);
+                            return;
+                        });
 
                         // Decrease the balance of the player who sends the transfer
                         const currentBalanceSender = Number(decreaseSnapshotTransfer.val());
-                        await set(balanceRef, currentBalanceSender - Number(newBalance));
+                        await set(balanceRef, currentBalanceSender - Number(newBalance)).then(() => {
+                            updateTransactionHistory(Number(gameID), { from: playerCode, amount: Number(newBalance), to: playerCodeTransferTarget });
+                        }).catch((error) => {
+                            console.error(error);    
+                            return;
+                        });
 
                     } 
                     else {

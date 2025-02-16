@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { db } from "../database/firebaseConfig";
-import { get, ref, set } from "firebase/database";
+import { get, ref, set, serverTimestamp } from "firebase/database";
 type GameInfo = {
   currency: string;
   initialBalance: string;
@@ -35,6 +35,8 @@ interface GameContextType {
   setDbPlayersInfo: React.Dispatch<React.SetStateAction<DbPlayersInfo>>;
   updateOnlineStatus: (gameID: number, playerCode: string, status: string) => Promise<void>;
   updateBankPermissions: (gameID: number, playerCode: string, isBank: "true" | "false") => Promise<void>;
+  getTransactionHistory: (gameID: number) => Promise<any>;
+  updateTransactionHistory: (gameID: number, newTransactionDetails: Object) => Promise<void>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -100,6 +102,43 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       }
   }
 
+  const getTransactionHistory = async (gameID: number) => {
+      const nodeRef = ref(db, `/ids/${gameID}/transactionHistory`);
+  
+      try {
+          // Check if the node exists
+          const snapshot = await get(nodeRef);
+  
+          if (snapshot.exists()) {
+              // Update the status if the node exists
+              return snapshot.val();
+          } else {
+              console.log(`transactionHistory Node does not exist for game ${gameID}.`);
+          }
+      } catch (error) {
+          console.error("Error updating online status:", error);
+      }
+  }
+
+  const updateTransactionHistory = async (gameID: number, newTransactionDetails: Object) => {
+      const nodeRef = ref(db, `/ids/${gameID}/transactionHistory`);
+  
+      try {
+          // Check if the node exists
+          const snapshot = await get(nodeRef);
+  
+          if (snapshot.exists()) {
+              // Update with first transaction 
+              const newTransactionID = snapshot.size + 1;
+              await set(ref(db, `/ids/${gameID}/transactionHistory/${newTransactionID}`), {...newTransactionDetails, timestamp: serverTimestamp()});
+          } else {
+              console.log(`transactionHistory Node does not exist for game ${gameID}.`);
+          }
+      } catch (error) {
+          console.error("Error updating online status:", error);
+      }
+  }
+
   const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
 
   return (
@@ -117,7 +156,9 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         dbPlayersInfo,
         setDbPlayersInfo,
         updateOnlineStatus,
-        updateBankPermissions
+        updateBankPermissions,
+        getTransactionHistory,
+        updateTransactionHistory
       }}
     >
       {children}

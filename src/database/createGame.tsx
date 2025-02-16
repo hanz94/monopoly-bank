@@ -54,15 +54,15 @@ export const createGame = async (newGameOptions: NewGameOptions) => {
     //Make sure id doesn't already exist in database
         let idExists;
         idExists = await checkIdExists(newId);
-        console.log(idExists);
+        // console.log(idExists);
         while (idExists) {
             newId = getRandomInteger(100000, 999999);
             idExists = await checkIdExists(newId);
             console.log(idExists);
         }
 
-    // Add new id in database
-    set(ref(db, `/ids/${newId}`), true).catch((error) => {
+    // Add new id in database with transactionHistory
+    set(ref(db, `/ids/${newId}/transactionHistory`), 0).catch((error) => {
         console.error(error);
     });
 

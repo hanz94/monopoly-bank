@@ -42,8 +42,6 @@ export default function ModalWindow({
     <Modal
       open={open}
       onClose={onClose}
-      // aria-labelledby="theme-aware-modal-title"
-      // aria-describedby="theme-aware-modal-description"
     >
       <ModalContent>
         <ModalHeader>
