@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { List, ListItem, ListItemAvatar, ListItemText, Avatar, IconButton, Typography } from "@mui/material";
+import { Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar, IconButton, Typography } from "@mui/material";
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -68,10 +68,18 @@ function Notifications() {
             {notifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((notification: NotificationType) => (
                 <ListItem key={notification.id}>
                     <ListItemAvatar>
-                        <Avatar>
-                            {notification.type === "info" && <InfoIcon />}
-                            {notification.type === "transfer-request" && <AccountBalanceWalletIcon />}
-                        </Avatar>
+                        <Badge
+                            color="primary"
+                            variant="dot"
+                            overlap="circular"
+                            invisible={notification.read}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        >
+                            <Avatar>
+                                {notification.type === "info" && <InfoIcon />}
+                                {notification.type === "transfer-request" && <AccountBalanceWalletIcon />}
+                            </Avatar>
+                        </Badge>
                     </ListItemAvatar>
                     <ListItemText
                         primary={

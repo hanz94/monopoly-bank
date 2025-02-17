@@ -93,12 +93,19 @@ export default function DrawerLeft() {
             <ListItemButton onClick={() => modalOpen({ title: 'Powiadomienia', content: <Notifications /> })}>
               <ListItemIcon sx={{ ml: 1 }}>
                 {notifications && notifications.length > 0 
-                  ? 
-                  <Badge badgeContent={notifications.length - 1} color="primary">
-                    <NotificationsIcon />
-                  </Badge> 
-                  : 
-                  <NotificationsIcon />
+                  ? (() => {
+                    //filter out null values, count only unread notifications
+                      const unreadCount = (notifications as any[]).filter(n => n && n.read === false).length;
+                      // show the badge only if there are unread notifications
+                      return unreadCount > 0 ? (
+                        <Badge badgeContent={unreadCount} color="primary">
+                          <NotificationsIcon />
+                        </Badge>
+                      ) : (
+                        <NotificationsIcon />
+                      );
+                    })()
+                  : <NotificationsIcon />
                 }
               </ListItemIcon>
               <ListItemText primary="Powiadomienia" />
