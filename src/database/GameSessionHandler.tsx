@@ -20,6 +20,7 @@ function GameSessionHandler() {
             setGameInfo,
             setGameSessionActive,
             setDbPlayersInfo,
+            setNotifications,
             updateOnlineStatus,
         } = useGameContext();    
     
@@ -108,6 +109,15 @@ function GameSessionHandler() {
                         playerCode: location.state.playerCode,
                         token: location.state.token,
                     });
+                });
+            }, []);
+
+            //watch and update player notifications
+            useEffect(() => {
+                const notificationsRef = ref(db, `/access/${location.state.playerCode}/notifications`);
+                onValue(notificationsRef, (snapshot) => {
+                    const notifications = snapshot.val() || [];
+                    setNotifications(notifications);
                 });
             }, []);
             

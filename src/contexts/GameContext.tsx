@@ -38,6 +38,8 @@ interface GameContextType {
   getTransactionHistory: (gameID: number) => Promise<any>;
   updateTransactionHistory: (gameID: number, newTransactionDetails: Object) => Promise<void>;
   getNotifications: (playerCode: string) => Promise<any>;
+  notifications: [];
+  setNotifications: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -58,6 +60,7 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [newPlayerNames, setNewPlayerNames] = useState<string[]>([]);
   const [newPlayerNamesDefined, setNewPlayerNamesDefined] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<[]>([]);
 
   const resetGameContext = () => {
     setNewPlayerNames([]);
@@ -172,7 +175,9 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         updateBankPermissions,
         getTransactionHistory,
         updateTransactionHistory,
-        getNotifications
+        getNotifications,
+        notifications,
+        setNotifications
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
@@ -29,7 +30,7 @@ export default function DrawerLeft() {
   const { mode, toggleTheme } = useThemeContext();
   const { isDrawerOpen, setIsDrawerOpen } = useDrawerContext();
   const { modalOpen } = useModalContext();
-  const { gameInfo, dbPlayersInfo } = useGameContext();
+  const { gameInfo, dbPlayersInfo, notifications } = useGameContext();
   const location = useLocation();
   const playerBalance = dbPlayersInfo[location.state?.playerCode]?.balance;
 
@@ -91,7 +92,14 @@ export default function DrawerLeft() {
           <ListItem disablePadding>
             <ListItemButton onClick={() => modalOpen({ title: 'Powiadomienia', content: <Notifications /> })}>
               <ListItemIcon sx={{ ml: 1 }}>
-                <NotificationsIcon />
+                {notifications && notifications.length > 0 
+                  ? 
+                  <Badge badgeContent={notifications.length - 1} color="primary">
+                    <NotificationsIcon />
+                  </Badge> 
+                  : 
+                  <NotificationsIcon />
+                }
               </ListItemIcon>
               <ListItemText primary="Powiadomienia" />
             </ListItemButton>

@@ -21,9 +21,8 @@ type NotificationType = {
 
 function Notifications() {
 
-    const { gameInfo, dbPlayersInfo, getNotifications } = useGameContext();
+    const { gameInfo, dbPlayersInfo, notifications, setNotifications, getNotifications } = useGameContext();
 
-    const [notifications, setNotifications] = useState<NotificationType[]>([]);
     const [page, setPage] = useState(0);
     const rowsPerPage = 4;
 
@@ -63,10 +62,10 @@ function Notifications() {
 
     return (
         <>
-        {notifications.length > 0 ? (
+        {notifications && notifications.length > 0 ? (
             <>
             <List sx={{ width: "100%", maxWidth: 360 }}>
-            {notifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((notification) => (
+            {notifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((notification: NotificationType) => (
                 <ListItem key={notification.id}>
                     <ListItemAvatar>
                         <Avatar>
@@ -103,7 +102,7 @@ function Notifications() {
             </List>
 
             {/* Pagination Controls */}
-            {notifications.length  > rowsPerPage + 1 && 
+            {notifications && notifications.length  > rowsPerPage + 1 && 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "10px", gap: "10px" }}>
                 <IconButton onClick={() => setPage(0)} disabled={page === 0}>
                     <FirstPage />
