@@ -67,6 +67,7 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
     setNewPlayerNamesDefined(false);
     setGameSessionActive(false);
     setGameInfo({} as GameInfo);
+    setNotifications([]);
   };
 
   const updateOnlineStatus = async (gameID: number, playerCode: string, status: string) => {
