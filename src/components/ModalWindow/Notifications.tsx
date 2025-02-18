@@ -21,7 +21,7 @@ type NotificationType = {
 
 function Notifications() {
 
-    const { gameInfo, dbPlayersInfo, notifications, setNotifications, getNotifications } = useGameContext();
+    const { gameInfo, dbPlayersInfo, notifications, setNotifications, getNotifications, updateNotification } = useGameContext();
 
     const [page, setPage] = useState(0);
     const rowsPerPage = 4;
@@ -66,7 +66,14 @@ function Notifications() {
             <>
             <List sx={{ width: "100%", maxWidth: 360 }}>
             {notifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((notification: NotificationType) => (
-                <ListItem key={notification.id}>
+                <ListItem 
+                key={notification.id} 
+                sx={{':hover': { backgroundColor: 'rgba(0, 0, 0, 0.1)', cursor: 'pointer' } }}
+                onClick={() => {
+                    //mark notification as read in database
+                    updateNotification(gameInfo.playerCode, notification.id, { ...notification, read: true });
+                }}
+                >
                     <ListItemAvatar>
                         <Badge
                             color="primary"

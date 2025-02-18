@@ -96,7 +96,7 @@ export const createGame = async (newGameOptions: NewGameOptions) => {
         set(ref(db, `/access/${playerCode}`), {
             gameID: newId,
             token: newToken,
-            notifications: { 1: { type: "info", textPrimary: "Witamy w grze!", textSecondary: `Rozpoczynasz grę z kwotą ${newGameOptions.initialBalance} ${newGameOptions.currency}.`, timestamp: serverTimestamp(), read: false }}
+            notifications: { 1: { id: 1, type: "info", textPrimary: "Witamy w grze!", textSecondary: `Rozpoczynasz grę z kwotą ${newGameOptions.initialBalance} ${newGameOptions.currency}.`, timestamp: serverTimestamp(), read: false }}
         }).catch((error) => {
             console.error(error);
         });
