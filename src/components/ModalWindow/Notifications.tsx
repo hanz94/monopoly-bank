@@ -3,7 +3,9 @@ import { Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar, IconButton
 import { FirstPage, LastPage, NavigateBefore, NavigateNext } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { useModalContext } from "../../contexts/ModalContext";
 import { useGameContext } from "../../contexts/GameContext";
+import NotificationDetails from "./NotificationDetails";
 import { ref, onValue } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
 
@@ -20,6 +22,8 @@ type NotificationType = {
 };
 
 function Notifications() {
+
+    const { modalOpen } = useModalContext();
 
     const { gameInfo, dbPlayersInfo, notifications, setNotifications, getNotifications, updateNotification } = useGameContext();
 
@@ -72,6 +76,8 @@ function Notifications() {
                 onClick={() => {
                     //mark notification as read in database
                     updateNotification(gameInfo.playerCode, notification.id, { ...notification, read: true });
+                    //open notification
+                    modalOpen({ title: `Powiadomienie #${notification.id}`, content: <NotificationDetails notificationID={notification.id} /> });
                 }}
                 >
                     <ListItemAvatar>
