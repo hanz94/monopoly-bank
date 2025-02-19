@@ -41,6 +41,7 @@ interface GameContextType {
   notifications: [];
   setNotifications: React.Dispatch<React.SetStateAction<any>>;
   updateNotification: (playerCode: string, notificationID: number, newNotification: Object) => Promise<void>;
+  fetchNotification: (notificationID: number) => Promise<any>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -173,7 +174,24 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
       catch (error) {
           console.error("Error updating notification:", error);
       }
-  }  
+  }
+
+  const fetchNotification = async (notificationID: number) => {
+      const nodeRef = ref(db, `/access/${gameInfo.playerCode}/notifications/${notificationID}`);
+
+      try {
+          const snapshot = await get(nodeRef);
+
+          if (snapshot.exists()) {
+              return snapshot.val();
+          } else {
+              console.log(`NotificationID: ${notificationID} Node does not exist for player ${gameInfo.playerCode}.`);
+          }
+      }
+      catch (error) {
+          console.error("Error updating notification:", error);
+      }
+  }
 
   const [dbPlayersInfo, setDbPlayersInfo] = useState<DbPlayersInfo>({});
 
@@ -198,7 +216,8 @@ const GameContextProvider = ({ children }: { children: React.ReactNode }) => {
         getNotifications,
         notifications,
         setNotifications,
-        updateNotification
+        updateNotification,
+        fetchNotification
       }}
     >
       {children}
