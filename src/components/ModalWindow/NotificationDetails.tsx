@@ -39,7 +39,7 @@ function NotificationDetails({notificationID}: {notificationID: number}) {
 
                     //redirect to ChangePlayerBalance if notification type is "transfer-request"
                     if (notification.type === "transfer-request") {
-                        modalOpen({ title: `Powiadomienie #${notification.id}`, content: <ChangePlayerBalance type="transfer-request-decision" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={dbPlayersInfo[location.state.playerCode]?.balance} currency={gameInfo.currency} playerNameTransferTarget={dbPlayersInfo[notification.from]?.name} playerCodeTransferTarget={notification.from} playerBalanceTransferTarget={dbPlayersInfo[notification.from]?.balance} transferRequestAmount={notification.amount} /> });
+                        modalOpen({ title: `Powiadomienie #${notification.id}`, content: <ChangePlayerBalance type="transfer-request-decision" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={dbPlayersInfo[location.state.playerCode]?.balance} currency={gameInfo.currency} playerNameTransferTarget={dbPlayersInfo[notification.from]?.name} playerCodeTransferTarget={notification.from} playerBalanceTransferTarget={dbPlayersInfo[notification.from]?.balance} transferRequestAmount={notification.amount} notificationID={notification.id} /> });
                     }
                 }
             })

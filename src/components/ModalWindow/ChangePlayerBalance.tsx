@@ -21,15 +21,16 @@ interface ChangePlayerBalanceProps {
     playerCodeTransferTarget?: string; // obligatory only with type: player-transfer or transfer-request-decision
     playerBalanceTransferTarget?: number | string; // obligatory only with type: player-transfer or transfer-request-decision
     transferRequestAmount?: number | string; // obligatory only with type: transfer-request-decision
+    notificationID?: number; // obligatory only with type: transfer-request-decision
 }
 
-function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus, playerNameTransferTarget, playerCodeTransferTarget, playerBalanceTransferTarget, transferRequestAmount }: ChangePlayerBalanceProps) {
+function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus, playerNameTransferTarget, playerCodeTransferTarget, playerBalanceTransferTarget, transferRequestAmount, notificationID }: ChangePlayerBalanceProps) {
 
     const [newPlayerBalance, setNewPlayerBalance] = useState<number | null>(null); // Allow null to track initial empty state
     const [isValid, setIsValid] = useState(false); // Tracks if the number is valid
 
     const { modalOpen, modalClose } = useModalContext();
-    const { updateTransactionHistory } = useGameContext();
+    const { updateTransactionHistory, getNotification, updateNotification } = useGameContext();
 
     const validateNumber = (value: string) => {
         // Only valid if it's a non-negative number
@@ -85,6 +86,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                     modalClose();
                     break;
                 case 'player-transfer':
+                case 'transfer-request-decision':
                     // Get the balance of the player who receives the transfer
                     const balanceRefTransferTarget = ref(db, `games/game-${gameID}/players/${playerCodeTransferTarget}/balance`);
 
@@ -103,7 +105,17 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                         // Decrease the balance of the player who sends the transfer
                         const currentBalanceSender = Number(decreaseSnapshotTransfer.val());
                         await set(balanceRef, currentBalanceSender - Number(newBalance)).then(() => {
+                            //add current transaction to history
                             updateTransactionHistory(Number(gameID), { from: playerCode, amount: Number(newBalance), to: playerCodeTransferTarget });
+
+                            if (type === 'transfer-request-decision') {
+                                //get current notification object by ID
+                                getNotification(playerCode, Number(notificationID)).then((notification) => {
+                                    //change current notification status to accepted
+                                    updateNotification(playerCode, Number(notificationID), {...notification, status: 'accepted'});
+                                }); 
+                            }
+
                         }).catch((error) => {
                             console.error(error);    
                             return;
@@ -147,6 +159,19 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             }
         } catch (error) {
             throw new Error(`Error updating balance: ${String(error)}`);
+        }
+    }
+    
+    const declineTransferRequest = async () => {
+        try {
+            //get current notification object by ID
+            getNotification(playerCode, Number(notificationID)).then((notification) => {
+                //change current notification status to declined
+                updateNotification(playerCode, Number(notificationID), {...notification, status: 'declined'});
+            });
+            modalClose();
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -253,7 +278,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             {type == 'transfer-request-decision' && transferRequestAmount && (
                 <>
                 <Typography sx={{ mt: 1.7, textAlign: 'center' }}><b>{playerNameTransferTarget}</b> prosi o przelew <b>{transferRequestAmount}&nbsp;{currency}</b>.</Typography>
-                <Typography sx={{ mt: 1.2, textAlign: 'center' }}>Pozostała kwota do wydania: <b>{Number(playerBalanceTransferTarget) - Number(transferRequestAmount)}&nbsp;{currency}</b></Typography>
+                <Typography sx={{ mt: 1.2, textAlign: 'center' }}>Pozostała kwota do wydania: <b>{Number(playerBalance) - Number(transferRequestAmount)}&nbsp;{currency}</b></Typography>
                 <Typography sx={{ mt: 2, mb: 1.25, textAlign: 'center' }}>Czy zaakceptować przelew?</Typography>
                 </>
             )}  
@@ -418,7 +443,7 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                         textTransform: 'none', // Keep text casing as is
                       }}
                     startIcon={<BlockIcon />}
-                    onClick={modalClose}
+                    onClick={declineTransferRequest}
                 >
                     Odrzuć
                 </Button>
