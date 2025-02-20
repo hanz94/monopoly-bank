@@ -3,28 +3,32 @@ import { useEffect, useState } from "react";
 import { useModalContext } from "../../contexts/ModalContext";
 import { useGameContext } from "../../contexts/GameContext";
 import DoneIcon from '@mui/icons-material/Done';
+import BlockIcon from '@mui/icons-material/Block';
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Notifications from "./Notifications";
 import { ref, set, get, serverTimestamp } from "firebase/database";
 import { db } from "../../database/firebaseConfig";
 
 interface ChangePlayerBalanceProps {
-    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank' | 'player-transfer' | 'ask-for-transfer';
+    type: 'bank-change' | 'bank-increase' | 'bank-decrease' | 'player-crossstartbonus' | 'player-deposit-to-bank' | 'player-withdraw-from-bank' | 'player-transfer' | 'ask-for-transfer' | 'transfer-request-decision';
     gameID: number | string;
     playerName: string;
     playerCode: string;
     playerBalance: number | string;
     currency: string;
     crossStartBonus?: number | string; // obligatory only with type: player-crossstartbonus
-    playerNameTransferTarget?: string; // obligatory only with type: player-transfer
-    playerCodeTransferTarget?: string; // obligatory only with type: player-transfer
-    playerBalanceTransferTarget?: number | string; // obligatory only with type: player-transfer
+    playerNameTransferTarget?: string; // obligatory only with type: player-transfer or transfer-request-decision
+    playerCodeTransferTarget?: string; // obligatory only with type: player-transfer or transfer-request-decision
+    playerBalanceTransferTarget?: number | string; // obligatory only with type: player-transfer or transfer-request-decision
+    transferRequestAmount?: number | string; // obligatory only with type: transfer-request-decision
 }
 
-function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus, playerNameTransferTarget, playerCodeTransferTarget, playerBalanceTransferTarget }: ChangePlayerBalanceProps) {
+function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalance, currency, crossStartBonus, playerNameTransferTarget, playerCodeTransferTarget, playerBalanceTransferTarget, transferRequestAmount }: ChangePlayerBalanceProps) {
 
     const [newPlayerBalance, setNewPlayerBalance] = useState<number | null>(null); // Allow null to track initial empty state
     const [isValid, setIsValid] = useState(false); // Tracks if the number is valid
 
-    const { modalClose } = useModalContext();
+    const { modalOpen, modalClose } = useModalContext();
     const { updateTransactionHistory } = useGameContext();
 
     const validateNumber = (value: string) => {
@@ -154,8 +158,28 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
         }
     }, []);
 
+    //Set the fixed value for newPlayerBalance for transfer-request-decision
+    useEffect(() => {
+        if (type === 'transfer-request-decision' && transferRequestAmount) {
+            setNewPlayerBalance(Number(transferRequestAmount));
+            setIsValid(true);
+        }
+    })
+
     return ( 
         <>
+        {/* Go Back to Notifications (only for transfer-request-decision) */}
+        {type == 'transfer-request-decision' && (
+            <Button
+                sx={{ mb: 2, width: '100%' }}
+                startIcon={<KeyboardBackspaceIcon />}
+                onClick={() => {
+                    modalOpen({ title: 'Powiadomienia', content: <Notifications /> });
+                }}>
+                    Powrót do powiadomień
+            </Button>
+        )}
+
             {/* Player details info */}
             <Typography sx={{ textAlign: 'center' }}>
                 <b>{playerName}</b>&nbsp;({playerCode})
@@ -224,6 +248,15 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
             {type == 'player-crossstartbonus' && crossStartBonus && (
                 <Typography sx={{ mt: 1, textAlign: 'center' }}>Dodatek "Przejście przez start" wynosi: <b>{crossStartBonus}&nbsp;{currency}</b></Typography>
             )}
+
+            {/* Transfer Request Amount value info */}
+            {type == 'transfer-request-decision' && transferRequestAmount && (
+                <>
+                <Typography sx={{ mt: 1.7, textAlign: 'center' }}><b>{playerNameTransferTarget}</b> prosi o przelew <b>{transferRequestAmount}&nbsp;{currency}</b>.</Typography>
+                <Typography sx={{ mt: 1.2, textAlign: 'center' }}>Pozostała kwota do wydania: <b>{Number(playerBalanceTransferTarget) - Number(transferRequestAmount)}&nbsp;{currency}</b></Typography>
+                <Typography sx={{ mt: 2, mb: 1.25, textAlign: 'center' }}>Czy zaakceptować przelew?</Typography>
+                </>
+            )}  
 
             {/* New account balance info */}
             {type == 'bank-increase' && isValid && (
@@ -326,35 +359,72 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
                 </>
             )}
 
-            {/* Buttons: Accept / Decline */}
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Button
-                variant="outlined"
-                sx={{
-                    mt: 2,
-                    width: '46%',
-                    textTransform: 'none', // Keep text casing as is
+            {/* Buttons: Accept / Close */}
+            {(type == 'bank-increase' || type == 'bank-decrease' || type == 'bank-change' || type == 'player-crossstartbonus' || type == 'player-deposit-to-bank' || type == 'player-withdraw-from-bank' || type == 'player-transfer' || type == 'ask-for-transfer') && (
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                    variant="outlined"
+                    sx={{
+                        mt: 2,
+                        width: '46%',
+                        textTransform: 'none', // Keep text casing as is
+    
+                      }}
+                    startIcon={<DoneIcon />}
+                    onClick={() => changeBalance(newPlayerBalance as number)}
+                    disabled={!isValid}
+                >
+                    Zatwierdź
+                </Button>
+    
+                <Button
+                    variant="outlined"
+                    sx={{
+                        mt: 2,
+                        width: '46%',
+                        textTransform: 'none', // Keep text casing as is
+                      }}
+                    onClick={modalClose}
+                >
+                    Anuluj
+                </Button>
+                </Box>
+            )}
 
-                  }}
-                startIcon={<DoneIcon />}
-                onClick={() => changeBalance(newPlayerBalance as number)}
-                disabled={!isValid}
-            >
-                Zatwierdź
-            </Button>
-
-            <Button
-                variant="outlined"
-                sx={{
-                    mt: 2,
-                    width: '46%',
-                    textTransform: 'none', // Keep text casing as is
-                  }}
-                onClick={modalClose}
-            >
-                Anuluj
-            </Button>
-            </Box>
+            {/* Buttons Accept / Decline / Go Back to Notifications */}
+            {(type == 'transfer-request-decision') && isValid && (
+                <>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Button
+                    variant="outlined"
+                    sx={{
+                        mt: 2,
+                        width: '46%',
+                        textTransform: 'none', // Keep text casing as is
+    
+                      }}
+                    startIcon={<DoneIcon />}
+                    onClick={() => changeBalance(newPlayerBalance as number)}
+                    disabled={!isValid}
+                >
+                    Zaakceptuj
+                </Button>
+    
+                <Button
+                    variant="outlined"
+                    sx={{
+                        mt: 2,
+                        width: '46%',
+                        textTransform: 'none', // Keep text casing as is
+                      }}
+                    startIcon={<BlockIcon />}
+                    onClick={modalClose}
+                >
+                    Odrzuć
+                </Button>
+                </Box>
+                </>
+            )}
         </>
     );
 }
