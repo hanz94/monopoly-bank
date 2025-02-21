@@ -196,7 +196,8 @@ function ChangePlayerBalance({ type, gameID, playerName, playerCode, playerBalan
         {/* Go Back to Notifications (only for transfer-request-decision) */}
         {type == 'transfer-request-decision' && (
             <Button
-                sx={{ mb: 2, width: '100%' }}
+                variant="outlined"
+                sx={{ mb: 3, width: '100%' }}
                 startIcon={<KeyboardBackspaceIcon />}
                 onClick={() => {
                     modalOpen({ title: 'Powiadomienia', content: <Notifications /> });
