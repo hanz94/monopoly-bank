@@ -1,30 +1,48 @@
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import { Typography } from '@mui/material';
-import { useEffect } from 'react';
 import newModalContent from '../../utils/newModalContent';
+import GoogleIcon from '@mui/icons-material/Google';
 import { motion } from 'framer-motion';
 import { bounce, scaleOnHover } from '../../utils/animations';
 import { useThemeContext } from '../../contexts/ThemeContext';
 import { useModalContext } from '../../contexts/ModalContext';
 import { useGameContext } from '../../contexts/GameContext';
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../database/firebaseConfig';
 
 function MainPage() {
     const { mode } = useThemeContext();
     const { modalOpen } = useModalContext();
     const { resetGameContext } = useGameContext();
 
-    //reset game context
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const handleGoogleLogin = () => {
+        const provider = new GoogleAuthProvider();
+        auth.languageCode = 'en';
+        signInWithPopup(auth, provider).then((result) => {
+
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential ? credential.accessToken : null;
+        const user = result.user;
+        
+        console.log('credential: ', credential)
+        console.log('token: ', token);
+        console.log('user: ', user);
+        });
+    }
+
+    //reset game context and watch for auth changes
     useEffect(() => {
         resetGameContext();
-        // createGame({
-        //     currency: 'PLN',
-        //     initialBalance: 1500,
-        //     crossStartBonus: 0,
-        //     numberOfPlayers: 4,
-        //     playerNames: ['P1', 'P2', 'P3', 'P4'],
-        // });
-        // deleteGame(816084);
+
+        const unsub = onAuthStateChanged(auth, (user) => {
+            setIsLoggedIn(!!user);
+          });
+
+        return () => unsub();
     }, []);
 
     return (
@@ -93,6 +111,34 @@ function MainPage() {
                         </Button>
                     </Grid> 
                 </Grid>
+
+                {isLoggedIn ? (
+                    <>
+                    <Typography sx={{ mt: 3 }}>Zalogowano jako: {auth.currentUser?.displayName}</Typography>
+                    <Typography sx={{ mt: 3 }}>Email: {auth.currentUser?.email}</Typography>
+                    <Button 
+                        variant="outlined"
+                        startIcon={<GoogleIcon />}
+                        component={motion.button}   
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4, mt: 3, textTransform: 'none' }} 
+                        onClick={() => auth.signOut()}
+                    >
+                        Wyloguj się
+                    </Button>
+                    </>
+                ) : (
+                    <Button 
+                        variant="outlined"
+                        startIcon={<GoogleIcon />}
+                        component={motion.button} 
+                        {...scaleOnHover} 
+                        sx={{ p: 1.4, mt: 3, textTransform: 'none' }} 
+                        onClick={handleGoogleLogin}
+                    >
+                        Zaloguj się przez Google
+                    </Button>
+                )}
             </div>
         </>
     );
