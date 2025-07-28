@@ -44,11 +44,9 @@ Clone the repository and install npm dependencies
   cd monopoly-bank
   npm install
 ```
-<<<<<<< HEAD
+
 Add file [firebaseConfig.tsx](https://github.com/hanz94/monopoly-bank/blob/0d1aba4e9e0fa7f1eb32cc85231d39bbc885ac6e/src/database/firebaseConfig.tsx) inside the /src/database/ with your Firebase Realtime Database configuration (Project Settings > Your Apps > SDK setup and configuration)
-=======
-Add file [firebaseConfig.tsx]([https://motion.dev/](https://github.com/hanz94/monopoly-bank/blob/0d1aba4e9e0fa7f1eb32cc85231d39bbc885ac6e/src/database/firebaseConfig.tsx)) inside the /src/database/ with your Firebase Realtime Database configuration (Project Settings > Your Apps > SDK setup and configuration)
->>>>>>> 2c4f0f7db777c3a64aa023db90681394ba1936d5
+
 ```bash
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics"; 
