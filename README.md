@@ -36,3 +36,49 @@ With Monopoly Bank you can:
 
 # Preview
 ![Monopoly Bank Preview (GIF)](https://github.com/hanz94/monopoly-bank/blob/db1f07d2aa78e7b0d8d8fda950e2ad38250ac68d/monopoly-bank.gif)
+
+# How to install
+Clone the repository and install npm dependencies
+```bash
+  git clone https://github.com/hanz94/monopoly-bank.git
+  cd monopoly-bank
+  npm install
+```
+Add file firebaseConfig.tsx inside the src with your Firebase Realtime Database configuration (Project Settings > Your Apps > SDK setup and configuration)
+```bash
+import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics"; 
+import { getDatabase } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
+
+const firebaseConfig = {
+    apiKey: "Your apiKey",
+    authDomain: "Your authDomain",
+    projectId: "Your projectId",
+    storageBucket: "Your storageBucket",
+    messagingSenderId: "Your messagingSenderId",
+    appId: "Your appId",
+    measurementId: "Your measurementId",
+    databaseURL: "Your databaseURL"
+};
+
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app); // Optional: uncomment to enable analytics
+
+export const db = getDatabase(app);
+export const auth = getAuth(app);
+
+```
+ Start the Development Server (on http://localhost:5173)
+```bash
+  npm run dev
+  // or
+  vite
+```
+# Acknowledgements
+- Arkadiusz Włodarczyk for inspiring courses on:
+    - [JS, XML, jQuery, AJAX and RWD](https://www.udemy.com/course/kurs-tworzenia-stron-www-w-html-i-css-od-podstaw-do-eksperta/ )
+    - [React Hooks, framer-motion, PWA](https://www.udemy.com/course/react-od-podstaw-do-eksperta/)
+
+# License
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/hanz94/monopoly-bank/blob/e5791559f69d82fa72a42791e57d116e0ef12abe/LICENSE) file for details.
