@@ -8,8 +8,8 @@ interface ModalWindowProps {
   modalContent: {
     title: string;
     content: JSX.Element;
-    //disable scroll - for long content, if true - setting 100% height for modal content (falls back to 80vh), enabling custom scroll management for modal content (default false)
-    disableScroll?: boolean;
+    //enable custom scroll - for long content, if true - setting 100% height for modal content (falls back to 80vh), enabling custom scroll management for modal content (default false)
+    enableCustomScroll?: boolean;
   };
 }
 
@@ -55,7 +55,7 @@ export default function ModalWindow({
       open={open}
       onClose={onClose}
     >
-      <ModalContent sx={{ height: modalContent.disableScroll ? '100%' : 'auto' }}>
+      <ModalContent sx={{ height: modalContent.enableCustomScroll ? '100%' : 'auto' }}>
         <ModalHeader>
           <Typography variant="h6" component="h2" id="theme-aware-modal-title">
             {modalContent.title}
@@ -74,7 +74,7 @@ export default function ModalWindow({
           sx={{
             flex: 1,
             pr: 1,
-            display: modalContent.disableScroll ? 'flex' : 'block',
+            display: modalContent.enableCustomScroll ? 'flex' : 'block',
             flexDirection: 'column',
             minHeight: 0
           }}

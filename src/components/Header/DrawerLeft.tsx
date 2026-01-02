@@ -23,7 +23,7 @@ import { useDrawerContext } from '../../contexts/DrawerContext';
 import ChooseOtherPlayer from '../ModalWindow/ChooseOtherPlayer';
 import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
 import Notifications from '../ModalWindow/Notifications';
-import TransactionHistory from '../ModalWindow/TransactionHistory';
+import newModalContent from '../../utils/newModalContent';
 
 
 export default function DrawerLeft() {
@@ -34,25 +34,33 @@ export default function DrawerLeft() {
   const location = useLocation();
   const playerBalance = dbPlayersInfo[location.state?.playerCode]?.balance;
 
-    const menuItems = [
-      { text: 'Nowy przelew', icon: <PaymentsIcon />, action: () => modalOpen({ title: 'Nowy przelew', content: <ChooseOtherPlayer target="create-transfer" /> }) },
-      { text: 'Poproś o przelew', icon: <CallIcon />, action: () => modalOpen({
+  const menuItems = [
+    { text: 'Nowy przelew', icon: <PaymentsIcon />, action: () => modalOpen({ title: 'Nowy przelew', content: <ChooseOtherPlayer target="create-transfer" /> }) },
+    {
+      text: 'Poproś o przelew', icon: <CallIcon />, action: () => modalOpen({
         title: 'Poproś o przelew',
         content: <ChooseOtherPlayer target="ask-for-transfer" />,
-    }) },
-      { text: 'Bonus', icon: <AttachMoneyIcon />, action: () => modalOpen({
+      })
+    },
+    {
+      text: 'Bonus', icon: <AttachMoneyIcon />, action: () => modalOpen({
         title: 'Bonus - wypłata z banku',
         content: <ChangePlayerBalance type="player-withdraw-from-bank" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} />,
-    }) },
-      { text: 'Podatek', icon: <MoneyOffIcon />, action: () => modalOpen({
+      })
+    },
+    {
+      text: 'Podatek', icon: <MoneyOffIcon />, action: () => modalOpen({
         title: 'Podatek - wpłata do banku',
         content: <ChangePlayerBalance type="player-deposit-to-bank" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} />,
-    }) },
-      { text: 'Przejście przez start', icon: <AddBusinessIcon />, action: () => modalOpen({
+      })
+    },
+    {
+      text: 'Przejście przez start', icon: <AddBusinessIcon />, action: () => modalOpen({
         title: 'Przejście przez start',
         content: <ChangePlayerBalance type="player-crossstartbonus" gameID={gameInfo.gameID} playerName={dbPlayersInfo[location.state.playerCode]?.name} playerCode={location.state.playerCode} playerBalance={playerBalance} currency={gameInfo.currency} crossStartBonus={gameInfo.crossStartBonus} />,
-    })},
-    ];
+      })
+    },
+  ];
 
 
   return (
@@ -69,42 +77,42 @@ export default function DrawerLeft() {
     >
       <Box sx={{ width: 250 }}>
         {dbPlayersInfo[location.state?.playerCode]?.name &&
-        (<>
-          <List>
-            {menuItems.map(({ text, icon, action }) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    action();
-                    setIsDrawerOpen(false);
-                  }}
-                >
-                  <ListItemIcon sx={{ ml: 1 }}>{icon}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </>)}
+          (<>
+            <List>
+              {menuItems.map(({ text, icon, action }) => (
+                <ListItem key={text} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      action();
+                      setIsDrawerOpen(false);
+                    }}
+                  >
+                    <ListItemIcon sx={{ ml: 1 }}>{icon}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </>)}
 
         <List>
           <ListItem disablePadding>
             <ListItemButton onClick={() => modalOpen({ title: 'Powiadomienia', content: <Notifications /> })}>
               <ListItemIcon sx={{ ml: 1 }}>
-                {notifications && notifications.length > 0 
+                {notifications && notifications.length > 0
                   ? (() => {
                     //filter out null values, count only unread notifications
-                      const unreadCount = (notifications as any[]).filter(n => n && n.read === false).length;
-                      // show the badge only if there are unread notifications
-                      return unreadCount > 0 ? (
-                        <Badge badgeContent={unreadCount} color="primary">
-                          <NotificationsIcon />
-                        </Badge>
-                      ) : (
+                    const unreadCount = (notifications as any[]).filter(n => n && n.read === false).length;
+                    // show the badge only if there are unread notifications
+                    return unreadCount > 0 ? (
+                      <Badge badgeContent={unreadCount} color="primary">
                         <NotificationsIcon />
-                      );
-                    })()
+                      </Badge>
+                    ) : (
+                      <NotificationsIcon />
+                    );
+                  })()
                   : <NotificationsIcon />
                 }
               </ListItemIcon>
@@ -113,14 +121,14 @@ export default function DrawerLeft() {
           </ListItem>
           {dbPlayersInfo[location.state?.playerCode]?.name && (
             <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => modalOpen({ title: 'Historia transakcji', content: <TransactionHistory /> })}>
-              <ListItemIcon sx={{ ml: 1 }}>
-                <ManageSearchIcon />
-              </ListItemIcon>
-              <ListItemText primary="Historia transakcji" />
-            </ListItemButton>
-          </ListItem>
+              <ListItemButton
+                onClick={() => modalOpen(newModalContent.transactionHistory)}>
+                <ListItemIcon sx={{ ml: 1 }}>
+                  <ManageSearchIcon />
+                </ListItemIcon>
+                <ListItemText primary="Historia transakcji" />
+              </ListItemButton>
+            </ListItem>
           )}
           <ListItem disablePadding>
             <ListItemButton onClick={toggleTheme}>
