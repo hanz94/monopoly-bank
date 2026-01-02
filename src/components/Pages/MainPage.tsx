@@ -24,13 +24,13 @@ function MainPage() {
         auth.languageCode = 'en';
         signInWithPopup(auth, provider).then((result) => {
 
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential ? credential.accessToken : null;
-        const user = result.user;
-        
-        console.log('credential: ', credential)
-        console.log('token: ', token);
-        console.log('user: ', user);
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential ? credential.accessToken : null;
+            const user = result.user;
+
+            console.log('credential: ', credential)
+            console.log('token: ', token);
+            console.log('user: ', user);
         });
     }
 
@@ -40,7 +40,7 @@ function MainPage() {
 
         const unsub = onAuthStateChanged(auth, (user) => {
             setIsLoggedIn(!!user);
-          });
+        });
 
         return () => unsub();
     }, []);
@@ -49,22 +49,22 @@ function MainPage() {
         <>
 
             {mode === 'dark' ? (
-                <motion.img 
-                    src={'/src/assets/m-logo-white.png'} 
-                    className="m-4" 
+                <motion.img
+                    src={'/src/assets/m-logo-white.png'}
+                    className="m-4"
                     alt="logo"
                     draggable={false}
-                    {...bounce} 
-                    {...scaleOnHover} 
+                    {...bounce}
+                    {...scaleOnHover}
                 />
             ) : (
-                <motion.img 
-                    src={'/src/assets/m-logo-black.png'} 
-                    className="m-4" 
+                <motion.img
+                    src={'/src/assets/m-logo-black.png'}
+                    className="m-4"
                     alt="logo"
                     draggable={false}
-                    {...bounce} 
-                    {...scaleOnHover} 
+                    {...bounce}
+                    {...scaleOnHover}
                 />
             )}
 
@@ -77,63 +77,63 @@ function MainPage() {
                 </Typography>
 
                 <Grid container spacing={{ xs: 2, sm: 0 }}>
-                    <Grid size={{xs: 12, sm: 3.5}}>
-                        <Button 
-                            variant="contained" 
-                            component={motion.button} 
-                            {...scaleOnHover} 
-                            sx={{ p: 1.4 }} 
+                    <Grid size={{ xs: 12, sm: 3.5 }}>
+                        <Button
+                            variant="contained"
+                            component={motion.button}
+                            {...scaleOnHover}
+                            sx={{ p: 1.4 }}
                             onClick={() => modalOpen(newModalContent.newGame)}
                         >
                             Nowa gra
                         </Button>
                     </Grid>
-                    <Grid size={{xs: 12, sm: 5}}>
-                        <Button 
-                            variant="contained" 
-                            component={motion.button} 
-                            {...scaleOnHover} 
-                            sx={{ p: 1.4 }} 
+                    <Grid size={{ xs: 12, sm: 5 }}>
+                        <Button
+                            variant="contained"
+                            component={motion.button}
+                            {...scaleOnHover}
+                            sx={{ p: 1.4 }}
                             onClick={() => modalOpen(newModalContent.joinGame)}
                         >
                             Dołącz do gry
                         </Button>
                     </Grid>
-                    <Grid size={{xs: 12, sm: 3.5}}>
-                        <Button 
-                            variant="contained" 
-                            component={motion.button} 
-                            {...scaleOnHover} 
-                            sx={{ p: 1.4 }} 
-                            onClick={() => modalOpen(newModalContent.instruction)}
+                    <Grid size={{ xs: 12, sm: 3.5 }}>
+                        <Button
+                            variant="contained"
+                            component={motion.button}
+                            {...scaleOnHover}
+                            sx={{ p: 1.4 }}
+                            onClick={() => modalOpen(newModalContent.tutorial)}
                         >
-                            Instrukcja
+                            Samouczek
                         </Button>
-                    </Grid> 
+                    </Grid>
                 </Grid>
 
                 {isLoggedIn ? (
                     <>
-                    <Typography sx={{ mt: 3 }}>Zalogowano jako: {auth.currentUser?.displayName}</Typography>
-                    <Typography sx={{ mt: 3 }}>Email: {auth.currentUser?.email}</Typography>
-                    <Button 
-                        variant="outlined"
-                        startIcon={<GoogleIcon />}
-                        component={motion.button}   
-                        {...scaleOnHover} 
-                        sx={{ p: 1.4, mt: 3, textTransform: 'none' }} 
-                        onClick={() => auth.signOut()}
-                    >
-                        Wyloguj się
-                    </Button>
+                        <Typography sx={{ mt: 3 }}>Zalogowano jako: {auth.currentUser?.displayName}</Typography>
+                        <Typography sx={{ mt: 3 }}>Email: {auth.currentUser?.email}</Typography>
+                        <Button
+                            variant="outlined"
+                            startIcon={<GoogleIcon />}
+                            component={motion.button}
+                            {...scaleOnHover}
+                            sx={{ p: 1.4, mt: 3, textTransform: 'none' }}
+                            onClick={() => auth.signOut()}
+                        >
+                            Wyloguj się
+                        </Button>
                     </>
                 ) : (
-                    <Button 
+                    <Button
                         variant="outlined"
                         startIcon={<GoogleIcon />}
-                        component={motion.button} 
-                        {...scaleOnHover} 
-                        sx={{ p: 1.4, mt: 3, textTransform: 'none' }} 
+                        component={motion.button}
+                        {...scaleOnHover}
+                        sx={{ p: 1.4, mt: 3, textTransform: 'none' }}
                         onClick={handleGoogleLogin}
                     >
                         Zaloguj się przez Google

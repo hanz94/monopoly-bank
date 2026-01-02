@@ -7,7 +7,10 @@ interface ModalWindowProps {
   onClose: () => void;
   modalContent: {
     title: string;
-    content: JSX.Element;};
+    content: JSX.Element;
+    //disable scroll - for long content, if true - setting 100% height for modal content (falls back to 80vh), enabling custom scroll management for modal content (default false)
+    disableScroll?: boolean;
+  };
 }
 
 const ModalContent = styled(Box)(({ theme }) => ({
@@ -22,6 +25,14 @@ const ModalContent = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(2.5),
   outline: 'none',
+  maxHeight: '80vh',
+  minHeight: '200px',
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden',
+  '@supports (height: 100dvh)': {
+    maxHeight: '80dvh',
+  },
 }));
 
 const ModalHeader = styled(Box)(({ theme }) => ({
@@ -29,6 +40,7 @@ const ModalHeader = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: theme.spacing(2),
+  flexShrink: 0,
 }));
 
 export default function ModalWindow({
@@ -43,13 +55,12 @@ export default function ModalWindow({
       open={open}
       onClose={onClose}
     >
-      <ModalContent>
+      <ModalContent sx={{ height: modalContent.disableScroll ? '100%' : 'auto' }}>
         <ModalHeader>
           <Typography variant="h6" component="h2" id="theme-aware-modal-title">
             {modalContent.title}
           </Typography>
           <IconButton
-            // aria-label="close"
             onClick={onClose}
             sx={{
               color: theme.palette.grey[500],
@@ -58,9 +69,18 @@ export default function ModalWindow({
             <CloseIcon />
           </IconButton>
         </ModalHeader>
-        <Typography id="theme-aware-modal-description" sx={{ mt: 2 }}>
+        <Box
+          id="theme-aware-modal-description"
+          sx={{
+            flex: 1,
+            pr: 1,
+            display: modalContent.disableScroll ? 'flex' : 'block',
+            flexDirection: 'column',
+            minHeight: 0
+          }}
+        >
           {modalContent.content}
-        </Typography>
+        </Box>
       </ModalContent>
     </Modal>
   );
