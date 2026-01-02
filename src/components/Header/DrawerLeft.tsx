@@ -22,7 +22,6 @@ import { useThemeContext } from '../../contexts/ThemeContext';
 import { useDrawerContext } from '../../contexts/DrawerContext';
 import ChooseOtherPlayer from '../ModalWindow/ChooseOtherPlayer';
 import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
-import Notifications from '../ModalWindow/Notifications';
 import newModalContent from '../../utils/newModalContent';
 
 
@@ -98,7 +97,7 @@ export default function DrawerLeft() {
 
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => modalOpen({ title: 'Powiadomienia', content: <Notifications /> })}>
+            <ListItemButton onClick={() => modalOpen(newModalContent.notifications)}>
               <ListItemIcon sx={{ ml: 1 }}>
                 {notifications && notifications.length > 0
                   ? (() => {

@@ -4,6 +4,7 @@ import JoinGame from "../components/ModalWindow/JoinGame";
 import Tutorial from "../components/ModalWindow/Tutorial";
 import TransactionHistory from "../components/ModalWindow/TransactionHistory";
 import DeleteGameConfirmation from "../components/ModalWindow/DeleteGameConfirmation";
+import Notifications from "../components/ModalWindow/Notifications";
 
 const newModalContent = {
     newGame: {
@@ -23,6 +24,10 @@ const newModalContent = {
         content: <Tutorial />,
         //enable custom scroll - for long content, setting 100% height for modal content (falls back to 80vh), enabling custom scroll management for modal content
         enableCustomScroll: true
+    },
+    notifications: {
+        title: "Powiadomienia",
+        content: <Notifications />,
     },
     transactionHistory: {
         title: "Historia transakcji",
