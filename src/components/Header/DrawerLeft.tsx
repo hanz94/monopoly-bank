@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
@@ -14,6 +15,7 @@ import CallIcon from '@mui/icons-material/Call';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import { useLocation } from "react-router-dom";
 import { useModalContext } from '../../contexts/ModalContext';
@@ -24,7 +26,6 @@ import ChooseOtherPlayer from '../ModalWindow/ChooseOtherPlayer';
 import ChangePlayerBalance from '../ModalWindow/ChangePlayerBalance';
 import newModalContent from '../../utils/newModalContent';
 
-
 export default function DrawerLeft() {
   const { mode, toggleTheme } = useThemeContext();
   const { isDrawerOpen, setIsDrawerOpen } = useDrawerContext();
@@ -32,6 +33,30 @@ export default function DrawerLeft() {
   const { gameInfo, dbPlayersInfo, notifications } = useGameContext();
   const location = useLocation();
   const playerBalance = dbPlayersInfo[location.state?.playerCode]?.balance;
+
+  //PWA Button states, functions and effects
+  const [showInstallPWAButton, setShowInstallPWAButton] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const handleBeforeInstallPrompt = (e: any) => {
+    e.preventDefault();
+    setDeferredPrompt(e);
+    setShowInstallPWAButton(true);
+  };
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) return;
+    const userChoice = await deferredPrompt.prompt();
+    if (userChoice.outcome === 'accepted') {
+      setShowInstallPWAButton(false);
+      setDeferredPrompt(null);
+    }
+  };
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+  // END PWA Button states, functions and effects 
 
   const menuItems = [
     { text: 'Nowy przelew', icon: <PaymentsIcon />, action: () => modalOpen({ title: 'Nowy przelew', content: <ChooseOtherPlayer target="create-transfer" /> }) },
@@ -74,70 +99,86 @@ export default function DrawerLeft() {
       disableBackdropTransition={true}
       swipeAreaWidth={55}
     >
-      <Box sx={{ width: 250 }}>
-        {dbPlayersInfo[location.state?.playerCode]?.name &&
-          (<>
-            <List>
-              {menuItems.map(({ text, icon, action }) => (
-                <ListItem key={text} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      action();
-                      setIsDrawerOpen(false);
-                    }}
-                  >
-                    <ListItemIcon sx={{ ml: 1 }}>{icon}</ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-            <Divider />
-          </>)}
-
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton onClick={() => modalOpen(newModalContent.notifications)}>
-              <ListItemIcon sx={{ ml: 1 }}>
-                {notifications && notifications.length > 0
-                  ? (() => {
-                    //filter out null values, count only unread notifications
-                    const unreadCount = (notifications as any[]).filter(n => n && n.read === false).length;
-                    // show the badge only if there are unread notifications
-                    return unreadCount > 0 ? (
-                      <Badge badgeContent={unreadCount} color="primary">
-                        <NotificationsIcon />
-                      </Badge>
-                    ) : (
-                      <NotificationsIcon />
-                    );
-                  })()
-                  : <NotificationsIcon />
-                }
-              </ListItemIcon>
-              <ListItemText primary="Powiadomienia" />
-            </ListItemButton>
-          </ListItem>
-          {dbPlayersInfo[location.state?.playerCode]?.name && (
+      <Box sx={{ width: 250, height: 'calc(100% - 64px)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box>
+          {dbPlayersInfo[location.state?.playerCode]?.name &&
+            (<>
+              <List>
+                {menuItems.map(({ text, icon, action }) => (
+                  <ListItem key={text} disablePadding>
+                    <ListItemButton
+                      onClick={() => {
+                        action();
+                        setIsDrawerOpen(false);
+                      }}
+                    >
+                      <ListItemIcon sx={{ ml: 1 }}>{icon}</ListItemIcon>
+                      <ListItemText primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+              <Divider />
+            </>)}
+          <List>
             <ListItem disablePadding>
-              <ListItemButton
-                onClick={() => modalOpen(newModalContent.transactionHistory)}>
+              <ListItemButton onClick={() => modalOpen(newModalContent.notifications)}>
                 <ListItemIcon sx={{ ml: 1 }}>
-                  <ManageSearchIcon />
+                  {notifications && notifications.length > 0
+                    ? (() => {
+                      //filter out null values, count only unread notifications
+                      const unreadCount = (notifications as any[]).filter(n => n && n.read === false).length;
+                      // show the badge only if there are unread notifications
+                      return unreadCount > 0 ? (
+                        <Badge badgeContent={unreadCount} color="primary">
+                          <NotificationsIcon />
+                        </Badge>
+                      ) : (
+                        <NotificationsIcon />
+                      );
+                    })()
+                    : <NotificationsIcon />
+                  }
                 </ListItemIcon>
-                <ListItemText primary="Historia transakcji" />
+                <ListItemText primary="Powiadomienia" />
               </ListItemButton>
             </ListItem>
-          )}
-          <ListItem disablePadding>
-            <ListItemButton onClick={toggleTheme}>
-              <ListItemIcon sx={{ ml: 1 }}>
-                <DarkModeSwitch checked={mode === 'dark'} size={24} sunColor="currentColor" moonColor="currentColor" />
-              </ListItemIcon>
-              <ListItemText primary={mode === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'} />
-            </ListItemButton>
-          </ListItem>
-        </List>
+            {dbPlayersInfo[location.state?.playerCode]?.name && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => modalOpen(newModalContent.transactionHistory)}>
+                  <ListItemIcon sx={{ ml: 1 }}>
+                    <ManageSearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Historia transakcji" />
+                </ListItemButton>
+              </ListItem>
+            )}
+            <ListItem disablePadding>
+              <ListItemButton onClick={toggleTheme}>
+                <ListItemIcon sx={{ ml: 1 }}>
+                  <DarkModeSwitch checked={mode === 'dark'} size={24} sunColor="currentColor" moonColor="currentColor" />
+                </ListItemIcon>
+                <ListItemText primary={mode === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'} />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Box>
+
+        <Box>
+          <List>
+            {showInstallPWAButton && (
+              <ListItem disablePadding>
+                <ListItemButton onClick={handleInstallPWA}>
+                  <ListItemIcon sx={{ ml: 1 }}>
+                    <GetAppIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Zainstaluj aplikację "Monopoly Bank"' />
+                </ListItemButton>
+              </ListItem>
+            )}
+          </List>
+        </Box>
 
       </Box>
     </SwipeableDrawer>
